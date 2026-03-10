@@ -14,6 +14,8 @@
             --surface: #FFFFFF;
             --text-dark: #003366;
             --border: #004B91;
+            --metal-silver: #E0E0E0;
+            --wood-brown: #8D6E63; /* 木紋色 */
         }
 
         body, html {
@@ -24,7 +26,7 @@
             user-select: none;
         }
 
-        /* --- 登入介面：50嵐門市窗台透視 --- */
+        /* --- 登入介面 --- */
         #login-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--50-yellow);
@@ -41,10 +43,10 @@
         .entrance-panel {
             background: var(--surface);
             border: 4px solid var(--50-blue);
-            padding: 30px; display: flex; flex-direction: column;
+            padding: 25px; display: flex; flex-direction: column;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             position: relative;
-            border-radius: 12px;
+            border-radius: 15px;
         }
 
         #instruction-board { transform: rotateY(20deg); transform-origin: right; border-top: 15px solid var(--50-blue); }
@@ -55,28 +57,18 @@
             background: white; border: 8px solid var(--50-blue);
             overflow: hidden; border-radius: 20px;
             position: relative;
+            box-shadow: inset 0 0 50px rgba(0, 75, 145, 0.1);
         }
 
-        /* 50嵐店員全身造型 - 縮小並上移避免被遮擋 */
-        #clerk-vibe {
-            font-size: 110px; 
-            margin-bottom: 20px; 
+        /* 預覽畫布 */
+        #clerk-preview-canvas {
+            position: absolute; top: 130px; 
+            width: 160px; height: 240px;
             z-index: 2;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
-            transition: transform 0.3s ease;
-            position: relative;
-            background: var(--50-blue); /* 模擬深藍色 polo 衫領口感 */
-            border-radius: 50%;
-            width: 150px;
-            height: 150px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 0 8px white, 0 0 0 12px var(--50-yellow);
         }
 
         #pickup-ledge {
-            width: 100%; height: 200px; background: var(--50-blue);
+            width: 100%; height: 210px; background: var(--50-blue);
             z-index: 5; display: flex; flex-direction: column;
             align-items: center; justify-content: center;
             box-shadow: 0 -10px 20px rgba(0,0,0,0.1);
@@ -84,52 +76,43 @@
 
         /* 角色選擇按鈕 */
         #gender-select {
-            display: flex; gap: 25px; margin-bottom: 15px;
+            display: flex; gap: 20px; margin-bottom: 12px;
         }
         .gender-btn {
-            background: white;
-            border: 3px solid var(--50-yellow);
-            border-radius: 50%;
-            width: 60px; height: 60px;
+            background: white; border: 3px solid var(--50-yellow);
+            border-radius: 50%; width: 50px; height: 50px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 28px; cursor: pointer;
-            transition: all 0.2s;
+            font-size: 22px; cursor: pointer; transition: all 0.2s;
         }
-        .gender-btn.active {
-            background: var(--50-yellow);
-            transform: scale(1.1);
-            box-shadow: 0 0 15px rgba(255,210,0,0.8);
-        }
+        .gender-btn.active { background: var(--50-yellow); transform: scale(1.1); box-shadow: 0 0 15px rgba(255,210,0,0.8); }
 
         #brand-logo-circle {
-            position: absolute; top: 15px; width: 100px; height: 100px;
+            position: absolute; top: 10px; width: 90px; height: 90px;
             background: var(--50-blue); border-radius: 50%;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: white; border: 4px solid var(--50-yellow);
-            z-index: 10; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white; border: 4px solid var(--50-yellow); z-index: 10;
         }
-        #brand-logo-circle .hh { font-size: 36px; font-weight: 900; line-height: 1; }
+        #brand-logo-circle .hh { font-size: 32px; font-weight: 900; line-height: 1; }
 
         .panel-title {
             color: var(--50-blue); font-size: 16px; font-weight: 900;
-            border-bottom: 3px solid var(--50-yellow); padding-bottom: 8px; margin-bottom: 20px;
+            border-bottom: 3px solid var(--50-yellow); padding-bottom: 8px; margin-bottom: 15px;
             text-align: center;
         }
 
         input {
             background: white; border: 2px solid var(--50-yellow);
-            color: var(--50-blue); font-size: 18px; padding: 8px; width: 220px;
+            color: var(--50-blue); font-size: 18px; padding: 8px; width: 200px;
             text-align: center; margin-bottom: 12px; outline: none;
             border-radius: 8px; font-weight: 900;
         }
 
         button#start-btn {
             background: var(--50-yellow); color: var(--50-blue); border: none;
-            padding: 10px 50px; font-weight: 900; cursor: pointer;
+            padding: 10px 45px; font-weight: 900; cursor: pointer;
             letter-spacing: 2px; font-size: 16px; border-radius: 8px;
-            box-shadow: 0 4px 0 #D4AF00; transition: 0.2s;
+            box-shadow: 0 4px 0 #D4AF00;
         }
-        button#start-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #D4AF00; }
 
         /* --- 遊戲主容器 --- */
         #game-view {
@@ -147,7 +130,6 @@
             z-index: 100; font-size: 14px; font-weight: 900; color: white;
         }
 
-        /* 成分明細彈窗 */
         #ingredient-modal {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 320px; background: white; border: 6px solid var(--50-blue);
@@ -155,8 +137,6 @@
             display: none; box-shadow: 0 30px 60px rgba(0,0,0,0.3);
             text-align: center;
         }
-        #ingredient-modal h3 { margin-top: 0; color: var(--50-blue); border-bottom: 2px solid var(--50-yellow); padding-bottom: 10px; }
-        #ingredient-modal p { font-size: 15px; line-height: 1.8; font-weight: bold; color: #444; }
         #close-modal-btn { background: var(--50-blue); color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 15px; }
 
         #summary-overlay {
@@ -164,20 +144,15 @@
             background: rgba(0, 75, 145, 0.98); z-index: 1000;
             display: none; flex-direction: column; align-items: center; justify-content: center;
             color: white;
+            text-align: center;
         }
-
-        .saving-msg { font-size: 16px; margin-top: 20px; color: var(--50-yellow); font-weight: bold; }
 
         .floating-notif {
             position: absolute; color: #FF3B30; font-weight: 900;
             pointer-events: none; animation: popUp 0.8s forwards;
             font-size: 32px; text-shadow: 2px 2px 0 white;
         }
-
-        @keyframes popUp {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-120px); opacity: 0; }
-        }
+        @keyframes popUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-120px); opacity: 0; } }
     </style>
 </head>
 <body>
@@ -187,13 +162,14 @@
         <!-- 左側：說明看板 -->
         <div class="entrance-panel" id="instruction-board">
             <div class="panel-title">門市營運公告</div>
-            <div style="font-size: 14px; line-height: 2.3; color: #333; font-weight: 500;">
-                1. 點擊上方原料桶進行投料<br>
+            <div style="font-size: 14px; line-height: 2.1; color: #333; font-weight: 500;">
+                1. 點擊上方飲料桶進行投料<br>
                 2. 飲料標籤詳列前三張配方<br>
                 3. 點擊標籤旁的 <b>ⓘ</b> 查看成分表<br>
                 4. 點擊下方吧檯中心結帳出貨<br>
                 5. 點垃圾桶圖示重做 (-$50)<br>
-                <b>6. 每回合遊戲時間為 5 分鐘</b>
+                <b>6. 每回合遊戲時間為 5 分鐘</b><br>
+                <span style="color:#FF3B30; font-weight: 900;">⚠️ 負債超過 $500 將破產倒閉！</span>
             </div>
         </div>
 
@@ -203,20 +179,19 @@
                 <div class="hh">HH</div>
                 <div style="font-size:10px; font-weight:bold;">特調飲品</div>
             </div>
-            <!-- 店員角色預覽 - 50嵐風格 -->
-            <div id="clerk-vibe">👱‍♂️</div>
+            <!-- 可愛店員預覽畫布 -->
+            <canvas id="clerk-preview-canvas" width="160" height="240"></canvas>
+            
             <div id="pickup-ledge">
-                <!-- 性別選擇按鈕 -->
                 <div id="gender-select">
-                    <div class="gender-btn active" id="btn-male" onclick="selectGender('male')">👱‍♂️</div>
-                    <div class="gender-btn" id="btn-female" onclick="selectGender('female')">👱‍♀️</div>
+                    <div class="gender-btn active" id="btn-male" onclick="selectGender('male')">👨</div>
+                    <div class="gender-btn" id="btn-female" onclick="selectGender('female')">👩</div>
                 </div>
                 <input type="text" id="player-name" placeholder="輸入店長姓名" maxlength="10">
                 <button id="start-btn" onclick="enterLab()">開始營業 OPEN</button>
             </div>
         </div>
 
-        <!-- 右側：排行榜 -->
         <div class="entrance-panel" id="rank-poster">
             <div class="panel-title">最佳店長排行榜 / RANK</div>
             <div id="rank-content" style="font-size: 15px; line-height: 2.8; color: var(--50-blue); font-weight: 900;">
@@ -230,15 +205,15 @@
     <!-- 成分明細彈窗 -->
     <div id="ingredient-modal">
         <h3 id="modal-title">成分明細</h3>
-        <p id="modal-body"></p>
+        <p id="modal-body" style="font-weight:bold; color:#444; font-size:16px; line-height:1.6;"></p>
         <button id="close-modal-btn" onclick="closeModal()">關閉視窗</button>
     </div>
 
     <!-- 結算畫面 -->
     <div id="summary-overlay">
-        <h1 style="font-size: 60px; color: var(--50-yellow);">LAB CLOSED</h1>
+        <h1 id="overlay-title" style="font-size: 60px; color: var(--50-yellow);">LAB CLOSED</h1>
         <p id="final-revenue" style="font-size: 32px; font-weight: 900;"></p>
-        <div id="save-status" class="saving-msg">正在同步營收至雲端資料庫...</div>
+        <div id="save-status" style="margin-top:20px; color:var(--50-yellow)">正在同步營收數據...</div>
         <button id="reload-btn" onclick="location.reload()" style="margin-top: 40px; padding: 15px 60px; background: white; color: var(--50-blue); border: none; font-weight: 900; border-radius: 50px; cursor: pointer; display: none;">返回門市首頁</button>
     </div>
 
@@ -251,7 +226,6 @@
 </div>
 
 <script>
-    // --- 填入您的 Google Apps Script 網址 ---
     const scriptURL = "https://script.google.com/macros/s/AKfycbzsAQtvTQbZ-SuvwT7aR-4JgSYl2enlOm_RkmepvRwjl4wYDLm52jpSW0tuZ3kkCf5O/exec"; 
 
     const RECIPES = {
@@ -284,29 +258,71 @@
         { name: "輸氣劑", w: 1, col: "#536DFE" }
     ];
 
+    // --- 佈局常數 ---
+    const shelf1Y = 190; 
+    const shelf2Y = 340;
+    const barrelW = 60; 
+    const barrelH = 120;
+    const barrelSpace = 85;
+
     let canvas, ctx, money = 0, timeLeft = 300, active = false;
     let user = "", orders = [], currentMix = {}, pX = 500;
-    
-    // 角色選擇狀態 - 50嵐制服風格角色
     let selectedGender = 'male';
-    const avatars = {
-        male: { full: "👱‍♂️", head: "👱‍♂️" },
-        female: { full: "👱‍♀️", head: "👱‍♀️" }
-    };
+    let isMixError = false; 
 
     window.onload = () => {
         canvas = document.getElementById('mainLab');
         ctx = canvas.getContext('2d');
         loadRank();
+        drawClerkOnLogin(); 
     };
+
+    function drawCuteClerk(context, x, y, size, gender, isHeadOnly = false) {
+        context.save();
+        context.translate(x, y);
+        if (gender === 'female') {
+            context.fillStyle = "#3D2B1F";
+            context.beginPath(); context.arc(0, -size * 0.1, size * 1.3, 0, Math.PI * 2); context.fill();
+            if (!isHeadOnly) context.fillRect(-size * 1.25, 0, size * 2.5, size * 2);
+            else { context.beginPath(); context.arc(0, size * 0.3, size * 1.2, 0, Math.PI); context.fill(); }
+        }
+        context.fillStyle = "#FFDBAC";
+        context.beginPath(); context.arc(0, 0, size, 0, Math.PI * 2); context.fill();
+        context.fillStyle = "#3D2B1F";
+        context.beginPath(); context.arc(0, -size * 0.45, size, Math.PI, 0); context.fill();
+        if (gender === 'female') {
+            context.fillStyle = "#FFDBAC";
+            context.beginPath(); context.moveTo(-size*0.4, -size*0.2); context.lineTo(0, -size*0.7); context.lineTo(size*0.4, -size*0.2); context.closePath(); context.fill();
+        }
+        context.fillStyle = "#333";
+        context.beginPath(); context.arc(-size*0.4, size*0.15, size*0.12, 0, Math.PI*2); context.fill();
+        context.beginPath(); context.arc(size*0.4, size*0.15, size*0.12, 0, Math.PI*2); context.fill();
+        context.strokeStyle = "#333"; context.lineWidth = 2.5;
+        context.beginPath(); context.arc(0, size*0.45, size*0.25, 0.2, Math.PI - 0.2); context.stroke();
+        context.fillStyle = "rgba(255, 180, 190, 0.8)";
+        context.beginPath(); context.arc(-size*0.7, size*0.3, size*0.2, 0, Math.PI*2); context.fill();
+        context.beginPath(); context.arc(size*0.7, size*0.3, size*0.2, 0, Math.PI*2); context.fill();
+        if (!isHeadOnly) {
+            context.translate(0, size * 1.5);
+            context.fillStyle = "#004B91"; roundRect(context, -size*1.3, -size*0.3, size*2.6, size*3, 15, true, false);
+            context.fillStyle = "#FFD200"; roundRect(context, -size*0.9, 0, size*1.8, size*2.7, 10, true, false);
+            context.fillStyle = "white"; roundRect(context, size*0.25, size*0.2, size*0.5, size*0.3, 4, true, false);
+        }
+        context.restore();
+    }
+
+    function drawClerkOnLogin() {
+        const previewCanvas = document.getElementById('clerk-preview-canvas');
+        const pCtx = previewCanvas.getContext('2d');
+        pCtx.clearRect(0,0,160,240);
+        drawCuteClerk(pCtx, 80, 65, 33, selectedGender, false);
+    }
 
     function selectGender(gender) {
         selectedGender = gender;
         document.getElementById('btn-male').classList.toggle('active', gender === 'male');
         document.getElementById('btn-female').classList.toggle('active', gender === 'female');
-        document.getElementById('clerk-vibe').innerText = avatars[gender].full;
-        document.getElementById('clerk-vibe').style.transform = "scale(1.1)";
-        setTimeout(() => document.getElementById('clerk-vibe').style.transform = "scale(1)", 200);
+        drawClerkOnLogin();
     }
 
     async function loadRank() {
@@ -317,9 +333,7 @@
             document.getElementById('rank-content').innerHTML = data.map((h, i) => 
                 `<div>${i+1}. ${h.name} <span style="float:right;">$${h.score}</span></div>`
             ).join('') || "尚無紀錄";
-        } catch (e) {
-            document.getElementById('rank-content').innerHTML = "資料庫連線中...";
-        }
+        } catch (e) { document.getElementById('rank-content').innerHTML = "資料庫連線中..."; }
     }
 
     function enterLab() {
@@ -342,48 +356,55 @@
         const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
         const my = (e.clientY - rect.top) * (canvas.height / rect.height);
 
+        // 1. 成分表按鈕檢測
         for(let i=0; i < Math.min(orders.length, 3); i++) {
-            const ox = 40 + i * 215, oy = 380;
+            const ox = 40 + i * 215, oy = 450;
             const labelItems = RECIPES[orders[i].type].label;
             for(let idx=0; idx < labelItems.length; idx++) {
-                const bx = ox + 165; 
-                const by = oy + 92 + idx * 25; 
-                if (mx > bx - 10 && mx < bx + 10 && my > by - 12 && my < by + 12) {
-                    const category = labelItems[idx].split(':')[0];
-                    showIngredientDetail(category);
+                const bx = ox + 165; const by = oy + 92 + idx * 25; 
+                if (mx > bx - 12 && mx < bx + 12 && my > by - 15 && my < by + 15) {
+                    showIngredientDetail(labelItems[idx].split(':')[0]);
                     return; 
                 }
             }
         }
 
         pX = mx; 
-
-        const space = 65, w = 50;
-        COLUMNS.forEach((c, i) => {
-            const x = 15 + i * space;
-            if(mx > x && mx < x + w && my > 60 && my < 350) {
-                currentMix[c.name] = (currentMix[c.name] || 0) + c.w;
-            }
-        });
-
-        if(mx > 920 && my > 380 && my < 480) {
-            currentMix = {}; money = Math.max(0, money - 50);
-            popNotif(e.clientX, e.clientY, "-$50");
+        
+        if (!isMixError) {
+            COLUMNS.forEach((c, i) => {
+                let x, y;
+                if (i < 8) { x = 160 + i * barrelSpace; y = shelf1Y - barrelH + 15; }
+                else { x = 200 + (i - 8) * barrelSpace; y = shelf2Y - barrelH + 15; }
+                if(mx > x && mx < x + barrelW && my > y && my < y + barrelH) {
+                    currentMix[c.name] = (currentMix[c.name] || 0) + c.w;
+                }
+            });
         }
 
-        if(my > 680) ship();
+        // 3. 垃圾桶 (修正：允許負債)
+        if(mx > 920 && my > 430 && my < 530) {
+            if (Object.keys(currentMix).length > 0 || isMixError) {
+                currentMix = {}; 
+                isMixError = false; 
+                money -= 50; // 允許負值
+                popNotif(e.clientX, e.clientY, "-$50");
+                checkBankruptcy(); // 檢查是否破產
+            }
+        }
+
+        // 4. 吧檯出貨
+        if(my > 700) ship();
     }
 
     function showIngredientDetail(category) {
-        const detail = INGREDIENT_DETAILS[category] || "暫無細節資料";
+        const detail = INGREDIENT_DETAILS[category] || "暫無資料";
         document.getElementById('modal-title').innerText = category + " 成分明細";
         document.getElementById('modal-body').innerText = detail;
         document.getElementById('ingredient-modal').style.display = 'block';
     }
 
-    function closeModal() {
-        document.getElementById('ingredient-modal').style.display = 'none';
-    }
+    function closeModal() { document.getElementById('ingredient-modal').style.display = 'none'; }
 
     function popNotif(x, y, t) {
         const d = document.createElement('div');
@@ -410,102 +431,157 @@
         if(timeLeft <= 0) finish();
     }
 
+    // 新增：檢查破產邏輯
+    function checkBankruptcy() {
+        if (money < -500) {
+            finish(true); // 傳入破產標記
+        }
+    }
+
     function ship() {
-        if(orders.length === 0) return;
+        if(orders.length === 0 || isMixError) return; 
+
         const o = orders[0], req = RECIPES[o.type].match;
         let ok = true;
         for(let k in req) if(currentMix[k] !== req[k]) ok = false;
         for(let k in currentMix) if(!req[k] && currentMix[k] > 0) ok = false;
+
         if(ok) {
             money += RECIPES[o.type].price;
-            orders.shift(); currentMix = {}; spawnOrder();
+            orders.shift(); currentMix = {}; isMixError = false; spawnOrder();
+            popNotif(pX, 680, "出貨成功！");
         } else {
-            currentMix = {}; money = Math.max(0, money - 30);
+            isMixError = true;
+            popNotif(pX, 680, "配方錯誤！");
         }
     }
 
-    async function finish() {
+    async function finish(isBankrupt = false) {
+        if (!active && !isBankrupt) return; // 避免重複執行
         active = false;
-        document.getElementById('final-revenue').innerText = `本日營收合計: $${money}`;
+        
+        const overlayTitle = document.getElementById('overlay-title');
+        const finalRevenueText = document.getElementById('final-revenue');
+        
+        if (isBankrupt) {
+            overlayTitle.innerText = "BANKRUPTCY";
+            overlayTitle.style.color = "#FF3B30";
+            finalRevenueText.innerText = `營收赤字: $${money} (破產倒閉)`;
+        } else {
+            overlayTitle.innerText = "LAB CLOSED";
+            overlayTitle.style.color = "var(--50-yellow)";
+            finalRevenueText.innerText = `本日營收合計: $${money}`;
+        }
+
         document.getElementById('summary-overlay').style.display = 'flex';
-        if (scriptURL) {
+        
+        if (scriptURL && !isBankrupt) { // 破產數據通常不計入正式排行，或依需求決定
             try {
                 await fetch(scriptURL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: user, score: money }) });
-                document.getElementById('save-status').innerText = "營營數據已成功上傳雲端排行榜！";
-            } catch (e) { document.getElementById('save-status').innerText = "雲端同步失敗。"; }
+            } catch (e) { }
         }
         document.getElementById('reload-btn').style.display = 'block';
     }
 
-    function loop() {
-        if(!active) return;
-        draw();
-        requestAnimationFrame(loop);
+    function loop() { if(!active) return; draw(); requestAnimationFrame(loop); }
+
+    function drawWoodenShelf(ctx, x, y, w, h) {
+        ctx.save();
+        ctx.fillStyle = "#8D6E63"; ctx.fillRect(x, y, w, h);
+        ctx.strokeStyle = "#6D4C41"; ctx.lineWidth = 2; ctx.beginPath();
+        for(let i=0; i < w; i+=15) { ctx.moveTo(x + i, y); ctx.lineTo(x + i + Math.random()*10 - 5, y + h); }
+        ctx.stroke(); ctx.fillStyle = "rgba(0,0,0,0.2)"; ctx.fillRect(x, y + h, w, 10); ctx.restore();
+    }
+
+    function drawBeverageBarrel(ctx, x, y, w, h, color, name, amount) {
+        ctx.save();
+        ctx.translate(x, y);
+        let metalGrad = ctx.createLinearGradient(0, 0, w, 0);
+        metalGrad.addColorStop(0, "#C0C0C0"); metalGrad.addColorStop(0.5, "#FDFDFD"); metalGrad.addColorStop(1, "#909090");
+        ctx.fillStyle = metalGrad; roundRect(ctx, 0, 0, w, h, 8, true, false);
+        ctx.fillStyle = color; roundRect(ctx, -2, 0, w + 4, 12, 4, true, false);
+        ctx.fillStyle = color; roundRect(ctx, -2, h - 10, w + 4, 12, 4, true, false);
+        ctx.fillStyle = "rgba(255,255,255,0.8)"; ctx.fillRect(4, 20, w - 8, 45);
+        ctx.fillStyle = "#004B91"; ctx.font = "bold 12px Noto Sans TC"; ctx.textAlign = "center";
+        ctx.fillText(name, w/2, 40);
+        ctx.font = "bold 10px Montserrat"; ctx.fillText(amount + "kg", w/2, 58);
+        ctx.fillStyle = color; ctx.fillRect(w/2 - 6, h - 5, 12, 8);
+        ctx.fillStyle = "#333"; ctx.fillRect(w/2 - 8, h + 3, 16, 4);
+        ctx.restore();
     }
 
     function draw() {
         ctx.clearRect(0,0,1000,750);
         ctx.fillStyle = "#FFF"; ctx.fillRect(0,0,1000,750);
-        
-        ctx.fillStyle = "#F5F5F7";
-        ctx.beginPath(); ctx.moveTo(0, 500); ctx.lineTo(1000, 500); ctx.lineTo(1000, 750); ctx.lineTo(0, 750); ctx.fill();
+        ctx.fillStyle = "#F5F5F7"; ctx.beginPath(); ctx.moveTo(0, 500); ctx.lineTo(1000, 500); ctx.lineTo(1000, 750); ctx.lineTo(0, 750); ctx.fill();
         ctx.strokeStyle = "rgba(0, 75, 145, 0.05)";
-        for(let i=0; i<15; i++) {
-            ctx.beginPath(); ctx.moveTo(0, 500 + i*20); ctx.lineTo(1000, 500 + i*20); ctx.stroke();
-        }
+        for(let i=0; i<15; i++) { ctx.beginPath(); ctx.moveTo(0, 500 + i*20); ctx.lineTo(1000, 500 + i*20); ctx.stroke(); }
 
-        const space = 65, w = 50, h = 260;
+        drawWoodenShelf(ctx, 140, shelf1Y, 720, 15);
+        drawWoodenShelf(ctx, 180, shelf2Y, 640, 15);
+
         COLUMNS.forEach((c, i) => {
-            const x = 15 + i * space, y = 70;
-            ctx.fillStyle = "rgba(0, 75, 145, 0.05)"; ctx.fillRect(x, y, w, h);
-            ctx.strokeStyle = "rgba(0, 75, 145, 0.2)"; ctx.strokeRect(x, y, w, h);
-            ctx.fillStyle = c.col; ctx.fillRect(x + 5, y + 110, w - 10, h - 120);
-            ctx.fillStyle = "#004B91"; ctx.font = "bold 13px Noto Sans TC"; ctx.textAlign = "center";
-            c.name.split('').forEach((char, ci) => ctx.fillText(char, x + w/2, y + 25 + ci * 18));
-            ctx.fillStyle = "#000"; ctx.font = "900 24px Montserrat";
-            ctx.fillText(c.w, x + w/2, y + h - 25);
-            ctx.font = "900 10px Montserrat"; ctx.fillText("kg", x + w/2, y + h - 10);
+            let x, y;
+            if (i < 8) { x = 160 + i * barrelSpace; y = shelf1Y - barrelH + 15; }
+            else { x = 200 + (i - 8) * barrelSpace; y = shelf2Y - barrelH + 15; }
+            drawBeverageBarrel(ctx, x, y, barrelW, barrelH, c.col, c.name, c.w);
         });
 
         orders.forEach((o, i) => {
             if(i < 3) {
-                const ox = 40 + i * 215, oy = 380;
+                const ox = 40 + i * 215, oy = 450;
                 ctx.fillStyle = "white"; ctx.shadowBlur=10; ctx.shadowColor="rgba(0,0,0,0.1)";
                 ctx.fillRect(ox, oy, 200, 240); ctx.shadowBlur=0;
                 ctx.fillStyle = "#004B91"; ctx.fillRect(ox, oy, 200, 30);
-                ctx.fillStyle = "white"; ctx.font = "900 14px Noto Sans TC"; ctx.textAlign="left"; ctx.fillText("HH TEA LABEL", ox + 15, oy + 20);
-                ctx.fillStyle = "#004B91"; ctx.font = "900 18px Noto Sans TC"; ctx.fillText(o.type, ox + 15, oy + 65);
-                
-                const labelItems = RECIPES[o.type].label;
-                labelItems.forEach((text, idx) => {
+                ctx.fillStyle = "white"; ctx.font = "900 14px Noto Sans TC"; ctx.textAlign="left"; ctx.fillText("HH TEA LABEL", ox+15, oy+20);
+                ctx.fillStyle = "#004B91"; ctx.font = "900 18px Noto Sans TC"; ctx.fillText(o.type, ox+15, oy+65);
+                RECIPES[o.type].label.forEach((text, idx) => {
                     const ly = oy + 100 + idx * 25;
-                    ctx.fillStyle = "#444"; ctx.font = "bold 13px Noto Sans TC";
-                    ctx.fillText(`- ${text}`, ox + 20, ly);
-                    ctx.fillStyle = "#004B91"; ctx.beginPath(); ctx.arc(ox + 165, ly - 4, 10, 0, Math.PI * 2); ctx.fill();
-                    ctx.fillStyle = "white"; ctx.font = "italic 11px Montserrat"; ctx.textAlign = "center"; ctx.fillText("i", ox + 165, ly - 1); ctx.textAlign = "left";
+                    ctx.fillStyle = "#444"; ctx.font = "bold 13px Noto Sans TC"; ctx.fillText(`- ${text}`, ox+20, ly);
+                    ctx.fillStyle = "#004B91"; ctx.beginPath(); ctx.arc(ox+165, ly-4, 10, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = "white"; ctx.font = "italic 11px Montserrat"; ctx.textAlign="center"; ctx.fillText("i", ox+165, ly-1); ctx.textAlign="left";
                 });
-                
-                ctx.fillStyle = "#EEE"; ctx.fillRect(ox + 15, oy + 220, 170, 5);
-                ctx.fillStyle = o.time < 30 ? "#FF5252" : "#004B91"; ctx.fillRect(ox + 15, oy + 220, (o.time/100)*170, 5);
+                ctx.fillStyle = "#EEE"; ctx.fillRect(ox+15, oy+220, 170, 5);
+                ctx.fillStyle = o.time < 30 ? "#FF5252" : "#004B91"; ctx.fillRect(ox+15, oy+220, (o.time/100)*170, 5);
             }
         });
 
-        ctx.fillStyle = "#004B91"; ctx.fillRect(690, 380, 280, 270);
-        ctx.fillStyle = "#FFD200"; ctx.font = "900 14px Montserrat"; ctx.textAlign="left"; ctx.fillText("MIXING PROGRESS", 710, 410);
-        let mixLines = Object.entries(currentMix).filter(([_,v])=>v>0).map(([k,v])=>`${k}:${v}kg`);
-        ctx.fillStyle = "#FFF"; ctx.font = "bold 12px Noto Sans TC";
-        mixLines.forEach((line, idx) => {
-            if(idx < 8) ctx.fillText(line, 710, 440 + idx * 22);
-        });
-
-        ctx.font = "45px Arial"; ctx.fillText("🗑️", 915, 415);
-        ctx.fillStyle = "#004B91"; ctx.fillRect(0, 680, 1000, 70);
-        ctx.fillStyle = "#FFD200"; ctx.font = "900 20px Noto Sans TC"; ctx.textAlign = "center";
-        ctx.fillText("🛎️ 點擊吧檯中心 · 結帳出貨", 500, 725);
+        ctx.fillStyle = "#004B91"; ctx.fillRect(690, 450, 280, 250);
+        ctx.fillStyle = "#FFD200"; ctx.font = "900 14px Montserrat"; ctx.textAlign="left"; ctx.fillText("MIXING PROGRESS", 710, 480);
         
-        // 根據選擇的性別顯示店員頭像 - 縮小且帶有店員氣質
-        ctx.font = "45px Arial";
-        ctx.fillText(avatars[selectedGender].head, pX, 675); 
+        if (isMixError) {
+            ctx.fillStyle = "#FF5252";
+            ctx.font = "bold 16px Noto Sans TC";
+            ctx.fillText("⚠️ 配方錯誤！", 710, 520);
+            ctx.fillStyle = "white";
+            ctx.font = "13px Noto Sans TC";
+            ctx.fillText("請點擊右側垃圾桶清空", 710, 550);
+            ctx.fillText("扣除 $50 後重新調製", 710, 575);
+        } else {
+            let mixLines = Object.entries(currentMix).filter(([_,v])=>v>0).map(([k,v])=>`${k}:${v}kg`);
+            ctx.fillStyle = "#FFF"; ctx.font = "bold 12px Noto Sans TC";
+            mixLines.forEach((line, idx) => { if(idx < 8) ctx.fillText(line, 710, 510 + idx*22); });
+            if (mixLines.length === 0) {
+                ctx.fillStyle = "rgba(255,255,255,0.4)";
+                ctx.fillText("等待投料中...", 710, 510);
+            }
+        }
+
+        ctx.font = "45px Arial"; ctx.fillText("🗑️", 915, 480);
+        ctx.fillStyle = "#004B91"; ctx.fillRect(0, 710, 1000, 40);
+        ctx.fillStyle = "#FFD200"; ctx.font = "900 18px Noto Sans TC"; ctx.textAlign = "center";
+        ctx.fillText("🛎️ 點擊吧檯結帳出貨", 500, 737);
+        drawCuteClerk(ctx, pX, 695, 23, selectedGender, true);
+    }
+
+    function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+        ctx.beginPath(); ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y); ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius); ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        ctx.lineTo(x + radius, y + height); ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.lineTo(x, y + radius); ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+        if (fill) ctx.fill(); if (stroke) ctx.stroke();
     }
 </script>
 </body>

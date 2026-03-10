@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HH 特調 - 50嵐經典旗艦店</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;900&family=Noto+Sans+TC:wght@500;900&display=swap');
+
+        :root {
+            --50-yellow: #FFD200; /* 50嵐經典黃 */
+            --50-blue: #004B91;   /* 50嵐經典藍 */
+            --bg-light: #FFFBE6;
+            --surface: #FFFFFF;
+            --text-dark: #003366;
+            --border: #004B91;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: var(--bg-light);
+            font-family: 'Noto Sans TC', 'Montserrat', sans-serif;
+            color: var(--text-dark); overflow: hidden;
+            user-select: none;
+        }
+
+        /* --- 登入介面：50嵐門市窗台透視 --- */
+        #login-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--50-yellow);
+            z-index: 5000; display: flex; justify-content: center; align-items: center;
+            perspective: 2000px; transition: 0.8s ease-in-out;
+        }
+
+        #store-entrance {
+            width: 1000px; height: 620px;
+            display: grid; grid-template-columns: 280px 1fr 280px;
+            gap: 25px; transform-style: preserve-3d;
+        }
+
+        .entrance-panel {
+            background: var(--surface);
+            border: 4px solid var(--50-blue);
+            padding: 30px; display: flex; flex-direction: column;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            position: relative;
+            border-radius: 12px;
+        }
+
+        #instruction-board { transform: rotateY(20deg); transform-origin: right; border-top: 15px solid var(--50-blue); }
+        #rank-poster { transform: rotateY(-20deg); transform-origin: left; border-top: 15px solid var(--50-blue); }
+
+        #main-login-hub {
+            justify-content: flex-end; align-items: center;
+            background: white; border: 8px solid var(--50-blue);
+            overflow: hidden; border-radius: 20px;
+            position: relative;
+        }
+
+        /* 50嵐店員全身造型 - 縮小並上移避免被遮擋 */
+        #clerk-vibe {
+            font-size: 110px; 
+            margin-bottom: 20px; 
+            z-index: 2;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
+            transition: transform 0.3s ease;
+            position: relative;
+            background: var(--50-blue); /* 模擬深藍色 polo 衫領口感 */
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 0 8px white, 0 0 0 12px var(--50-yellow);
+        }
+
+        #pickup-ledge {
+            width: 100%; height: 200px; background: var(--50-blue);
+            z-index: 5; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            box-shadow: 0 -10px 20px rgba(0,0,0,0.1);
+        }
+
+        /* 角色選擇按鈕 */
+        #gender-select {
+            display: flex; gap: 25px; margin-bottom: 15px;
+        }
+        .gender-btn {
+            background: white;
+            border: 3px solid var(--50-yellow);
+            border-radius: 50%;
+            width: 60px; height: 60px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .gender-btn.active {
+            background: var(--50-yellow);
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255,210,0,0.8);
+        }
+
+        #brand-logo-circle {
+            position: absolute; top: 15px; width: 100px; height: 100px;
+            background: var(--50-blue); border-radius: 50%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white; border: 4px solid var(--50-yellow);
+            z-index: 10; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        #brand-logo-circle .hh { font-size: 36px; font-weight: 900; line-height: 1; }
+
+        .panel-title {
+            color: var(--50-blue); font-size: 16px; font-weight: 900;
+            border-bottom: 3px solid var(--50-yellow); padding-bottom: 8px; margin-bottom: 20px;
+            text-align: center;
+        }
+
+        input {
+            background: white; border: 2px solid var(--50-yellow);
+            color: var(--50-blue); font-size: 18px; padding: 8px; width: 220px;
+            text-align: center; margin-bottom: 12px; outline: none;
+            border-radius: 8px; font-weight: 900;
+        }
+
+        button#start-btn {
+            background: var(--50-yellow); color: var(--50-blue); border: none;
+            padding: 10px 50px; font-weight: 900; cursor: pointer;
+            letter-spacing: 2px; font-size: 16px; border-radius: 8px;
+            box-shadow: 0 4px 0 #D4AF00; transition: 0.2s;
+        }
+        button#start-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #D4AF00; }
+
+        /* --- 遊戲主容器 --- */
+        #game-view {
+            width: 1000px; height: 750px; position: relative;
+            background: white; margin: 0 auto;
+            border: 6px solid var(--50-blue);
+            border-radius: 20px; overflow: hidden;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.2);
+        }
+
+        .hud-info {
+            position: absolute; top: 0; left: 0; width: 100%; height: 55px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 30px; box-sizing: border-box; background: var(--50-blue);
+            z-index: 100; font-size: 14px; font-weight: 900; color: white;
+        }
+
+        /* 成分明細彈窗 */
+        #ingredient-modal {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 320px; background: white; border: 6px solid var(--50-blue);
+            border-radius: 15px; z-index: 2000; padding: 20px;
+            display: none; box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        #ingredient-modal h3 { margin-top: 0; color: var(--50-blue); border-bottom: 2px solid var(--50-yellow); padding-bottom: 10px; }
+        #ingredient-modal p { font-size: 15px; line-height: 1.8; font-weight: bold; color: #444; }
+        #close-modal-btn { background: var(--50-blue); color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 15px; }
+
+        #summary-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 75, 145, 0.98); z-index: 1000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            color: white;
+        }
+
+        .saving-msg { font-size: 16px; margin-top: 20px; color: var(--50-yellow); font-weight: bold; }
+
+        .floating-notif {
+            position: absolute; color: #FF3B30; font-weight: 900;
+            pointer-events: none; animation: popUp 0.8s forwards;
+            font-size: 32px; text-shadow: 2px 2px 0 white;
+        }
+
+        @keyframes popUp {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-120px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="login-screen">
+    <div id="store-entrance">
+        <!-- 左側：說明看板 -->
+        <div class="entrance-panel" id="instruction-board">
+            <div class="panel-title">門市營運公告</div>
+            <div style="font-size: 14px; line-height: 2.3; color: #333; font-weight: 500;">
+                1. 點擊上方原料桶進行投料<br>
+                2. 飲料標籤詳列前三張配方<br>
+                3. 點擊標籤旁的 <b>ⓘ</b> 查看成分表<br>
+                4. 點擊下方吧檯中心結帳出貨<br>
+                5. 點垃圾桶圖示重做 (-$50)<br>
+                <b>6. 每回合遊戲時間為 5 分鐘</b>
+            </div>
+        </div>
+
+        <!-- 中央：門市窗口 -->
+        <div class="entrance-panel" id="main-login-hub">
+            <div id="brand-logo-circle">
+                <div class="hh">HH</div>
+                <div style="font-size:10px; font-weight:bold;">特調飲品</div>
+            </div>
+            <!-- 店員角色預覽 - 50嵐風格 -->
+            <div id="clerk-vibe">👱‍♂️</div>
+            <div id="pickup-ledge">
+                <!-- 性別選擇按鈕 -->
+                <div id="gender-select">
+                    <div class="gender-btn active" id="btn-male" onclick="selectGender('male')">👱‍♂️</div>
+                    <div class="gender-btn" id="btn-female" onclick="selectGender('female')">👱‍♀️</div>
+                </div>
+                <input type="text" id="player-name" placeholder="輸入店長姓名" maxlength="10">
+                <button id="start-btn" onclick="enterLab()">開始營業 OPEN</button>
+            </div>
+        </div>
+
+        <!-- 右側：排行榜 -->
+        <div class="entrance-panel" id="rank-poster">
+            <div class="panel-title">最佳店長排行榜 / RANK</div>
+            <div id="rank-content" style="font-size: 15px; line-height: 2.8; color: var(--50-blue); font-weight: 900;">
+                連線中...
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="game-view">
+    <!-- 成分明細彈窗 -->
+    <div id="ingredient-modal">
+        <h3 id="modal-title">成分明細</h3>
+        <p id="modal-body"></p>
+        <button id="close-modal-btn" onclick="closeModal()">關閉視窗</button>
+    </div>
+
+    <!-- 結算畫面 -->
+    <div id="summary-overlay">
+        <h1 style="font-size: 60px; color: var(--50-yellow);">LAB CLOSED</h1>
+        <p id="final-revenue" style="font-size: 32px; font-weight: 900;"></p>
+        <div id="save-status" class="saving-msg">正在同步營收至雲端資料庫...</div>
+        <button id="reload-btn" onclick="location.reload()" style="margin-top: 40px; padding: 15px 60px; background: white; color: var(--50-blue); border: none; font-weight: 900; border-radius: 50px; cursor: pointer; display: none;">返回門市首頁</button>
+    </div>
+
+    <div class="hud-info">
+        <div>MANAGER: <span id="id-disp">---</span></div>
+        <div style="font-size: 20px; letter-spacing: 2px;">HH 特調飲料旗艦店</div>
+        <div>營收: $<span id="funds-disp">0</span> | 剩餘時間: <span id="timer-disp">05:00</span></div>
+    </div>
+    <canvas id="mainLab" width="1000" height="750"></canvas>
+</div>
+
+<script>
+    // --- 填入您的 Google Apps Script 網址 ---
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzsAQtvTQbZ-SuvwT7aR-4JgSYl2enlOm_RkmepvRwjl4wYDLm52jpSW0tuZ3kkCf5O/exec"; 
+
+    const RECIPES = {
+        "混凝土綜合冰沙": { match: { "3分石":450,"6分石":450,"粗砂":450,"細砂":450,"緩凝劑":1,"減水劑":1,"抗凍劑":1,"速凝劑":1,"輸氣劑":1,"清水":120,"汙水":30,"水泥一型":180,"水泥二型":190,"飛灰":80,"爐石":100 }, price: 500, label: ["骨材:1800kg", "藥劑:5kg", "水類:150kg", "膠結:550kg"] },
+        "砂漿奶昔": { match: { "清水":120,"汙水":30,"粗砂":450,"細砂":450,"水泥一型":180,"水泥二型":190,"飛灰":80,"爐石":100 }, price: 300, label: ["水類:150kg", "細骨材:900kg", "膠結材:550kg"] },
+        "水合反應拿鐵": { match: { "清水":120,"汙水":30,"水泥一型":180,"水泥二型":190,"飛灰":80,"爐石":100 }, price: 350, label: ["水類:150kg", "膠結材:550kg"] },
+        "骨材氣泡飲": { match: { "3分石":450,"6分石":450,"粗砂":450,"細砂":450,"清水":120,"汙水":30 }, price: 200, label: ["全骨材:1800kg", "水類:150kg"] },
+        "神秘藥水": { match: { "緩凝劑":1,"減水劑":1,"抗凍劑":1,"速凝劑":1,"輸氣劑":1,"清水":120,"汙水":30 }, price: 800, label: ["特調藥劑:5kg", "水類:150kg"] }
+    };
+
+    const INGREDIENT_DETAILS = {
+        "水類": "清水 (120kg)、汙水 (30kg)",
+        "骨材": "3分石 (450kg)、6分石 (450kg)、粗砂 (450kg)、細砂 (450kg)",
+        "全骨材": "3分石 (450kg)、6分石 (450kg)、粗砂 (450kg)、細砂 (450kg)",
+        "細骨材": "粗砂 (450kg)、細砂 (450kg)",
+        "藥劑": "緩凝劑、減水劑、抗凍劑、速凝劑、輸氣劑 (各 1kg)",
+        "特調藥劑": "緩凝劑、減水劑、抗凍劑、速凝劑、輸氣劑 (各 1kg)",
+        "膠結": "水泥一型 (180kg)、水泥二型 (190kg)、飛灰 (80kg)、爐石 (100kg)",
+        "膠結材": "水泥一型 (180kg)、水泥二型 (190kg)、飛灰 (80kg)、爐石 (100kg)"
+    };
+
+    const COLUMNS = [
+        { name: "清水", w: 120, col: "#4FC3F7" }, { name: "汙水", w: 30, col: "#8D6E63" },
+        { name: "3分石", w: 450, col: "#90A4AE" }, { name: "6分石", w: 450, col: "#546E7A" },
+        { name: "粗砂", w: 450, col: "#FFB300" }, { name: "細砂", w: 450, col: "#FFF176" },
+        { name: "水泥一型", w: 180, col: "#B0BEC5" }, { name: "水泥二型", w: 190, col: "#ECEFF1" },
+        { name: "飛灰", w: 80, col: "#78909C" }, { name: "爐石", w: 100, col: "#37474F" },
+        { name: "緩凝劑", w: 1, col: "#FF5252" }, { name: "減水劑", w: 1, col: "#FF4081" },
+        { name: "抗凍劑", w: 1, col: "#E040FB" }, { name: "速凝劑", w: 1, col: "#7C4DFF" },
+        { name: "輸氣劑", w: 1, col: "#536DFE" }
+    ];
+
+    let canvas, ctx, money = 0, timeLeft = 300, active = false;
+    let user = "", orders = [], currentMix = {}, pX = 500;
+    
+    // 角色選擇狀態 - 50嵐制服風格角色
+    let selectedGender = 'male';
+    const avatars = {
+        male: { full: "👱‍♂️", head: "👱‍♂️" },
+        female: { full: "👱‍♀️", head: "👱‍♀️" }
+    };
+
+    window.onload = () => {
+        canvas = document.getElementById('mainLab');
+        ctx = canvas.getContext('2d');
+        loadRank();
+    };
+
+    function selectGender(gender) {
+        selectedGender = gender;
+        document.getElementById('btn-male').classList.toggle('active', gender === 'male');
+        document.getElementById('btn-female').classList.toggle('active', gender === 'female');
+        document.getElementById('clerk-vibe').innerText = avatars[gender].full;
+        document.getElementById('clerk-vibe').style.transform = "scale(1.1)";
+        setTimeout(() => document.getElementById('clerk-vibe').style.transform = "scale(1)", 200);
+    }
+
+    async function loadRank() {
+        if (!scriptURL) return;
+        try {
+            const response = await fetch(scriptURL);
+            const data = await response.json();
+            document.getElementById('rank-content').innerHTML = data.map((h, i) => 
+                `<div>${i+1}. ${h.name} <span style="float:right;">$${h.score}</span></div>`
+            ).join('') || "尚無紀錄";
+        } catch (e) {
+            document.getElementById('rank-content').innerHTML = "資料庫連線中...";
+        }
+    }
+
+    function enterLab() {
+        user = document.getElementById('player-name').value || "HH店長";
+        document.getElementById('id-disp').innerText = user;
+        document.getElementById('login-screen').style.opacity = 0;
+        setTimeout(() => {
+            document.getElementById('login-screen').style.display = 'none';
+            active = true;
+            for(let i=0; i<6; i++) spawnOrder();
+            canvas.addEventListener('mousedown', onClick);
+            setInterval(sec, 1000);
+            requestAnimationFrame(loop);
+        }, 800);
+    }
+
+    function onClick(e) {
+        if(!active) return;
+        const rect = canvas.getBoundingClientRect(); 
+        const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
+        const my = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+        for(let i=0; i < Math.min(orders.length, 3); i++) {
+            const ox = 40 + i * 215, oy = 380;
+            const labelItems = RECIPES[orders[i].type].label;
+            for(let idx=0; idx < labelItems.length; idx++) {
+                const bx = ox + 165; 
+                const by = oy + 92 + idx * 25; 
+                if (mx > bx - 10 && mx < bx + 10 && my > by - 12 && my < by + 12) {
+                    const category = labelItems[idx].split(':')[0];
+                    showIngredientDetail(category);
+                    return; 
+                }
+            }
+        }
+
+        pX = mx; 
+
+        const space = 65, w = 50;
+        COLUMNS.forEach((c, i) => {
+            const x = 15 + i * space;
+            if(mx > x && mx < x + w && my > 60 && my < 350) {
+                currentMix[c.name] = (currentMix[c.name] || 0) + c.w;
+            }
+        });
+
+        if(mx > 920 && my > 380 && my < 480) {
+            currentMix = {}; money = Math.max(0, money - 50);
+            popNotif(e.clientX, e.clientY, "-$50");
+        }
+
+        if(my > 680) ship();
+    }
+
+    function showIngredientDetail(category) {
+        const detail = INGREDIENT_DETAILS[category] || "暫無細節資料";
+        document.getElementById('modal-title').innerText = category + " 成分明細";
+        document.getElementById('modal-body').innerText = detail;
+        document.getElementById('ingredient-modal').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('ingredient-modal').style.display = 'none';
+    }
+
+    function popNotif(x, y, t) {
+        const d = document.createElement('div');
+        d.className = 'floating-notif';
+        d.style.left = x + 'px'; d.style.top = y + 'px';
+        d.innerText = t; document.body.appendChild(d);
+        setTimeout(() => d.remove(), 800);
+    }
+
+    function spawnOrder() {
+        const t = Object.keys(RECIPES);
+        orders.push({ type: t[Math.floor(Math.random()*t.length)], time: 100 });
+    }
+
+    function sec() {
+        if(!active) return;
+        timeLeft--;
+        orders.forEach(o => o.time--);
+        if(orders[0] && orders[0].time <= 0) orders.shift();
+        if(orders.length < 6) spawnOrder();
+        document.getElementById('funds-disp').innerText = money;
+        const m = Math.floor(timeLeft/60), s = timeLeft%60;
+        document.getElementById('timer-disp').innerText = `${m}:${s < 10 ? '0'+s : s}`;
+        if(timeLeft <= 0) finish();
+    }
+
+    function ship() {
+        if(orders.length === 0) return;
+        const o = orders[0], req = RECIPES[o.type].match;
+        let ok = true;
+        for(let k in req) if(currentMix[k] !== req[k]) ok = false;
+        for(let k in currentMix) if(!req[k] && currentMix[k] > 0) ok = false;
+        if(ok) {
+            money += RECIPES[o.type].price;
+            orders.shift(); currentMix = {}; spawnOrder();
+        } else {
+            currentMix = {}; money = Math.max(0, money - 30);
+        }
+    }
+
+    async function finish() {
+        active = false;
+        document.getElementById('final-revenue').innerText = `本日營收合計: $${money}`;
+        document.getElementById('summary-overlay').style.display = 'flex';
+        if (scriptURL) {
+            try {
+                await fetch(scriptURL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: user, score: money }) });
+                document.getElementById('save-status').innerText = "營營數據已成功上傳雲端排行榜！";
+            } catch (e) { document.getElementById('save-status').innerText = "雲端同步失敗。"; }
+        }
+        document.getElementById('reload-btn').style.display = 'block';
+    }
+
+    function loop() {
+        if(!active) return;
+        draw();
+        requestAnimationFrame(loop);
+    }
+
+    function draw() {
+        ctx.clearRect(0,0,1000,750);
+        ctx.fillStyle = "#FFF"; ctx.fillRect(0,0,1000,750);
+        
+        ctx.fillStyle = "#F5F5F7";
+        ctx.beginPath(); ctx.moveTo(0, 500); ctx.lineTo(1000, 500); ctx.lineTo(1000, 750); ctx.lineTo(0, 750); ctx.fill();
+        ctx.strokeStyle = "rgba(0, 75, 145, 0.05)";
+        for(let i=0; i<15; i++) {
+            ctx.beginPath(); ctx.moveTo(0, 500 + i*20); ctx.lineTo(1000, 500 + i*20); ctx.stroke();
+        }
+
+        const space = 65, w = 50, h = 260;
+        COLUMNS.forEach((c, i) => {
+            const x = 15 + i * space, y = 70;
+            ctx.fillStyle = "rgba(0, 75, 145, 0.05)"; ctx.fillRect(x, y, w, h);
+            ctx.strokeStyle = "rgba(0, 75, 145, 0.2)"; ctx.strokeRect(x, y, w, h);
+            ctx.fillStyle = c.col; ctx.fillRect(x + 5, y + 110, w - 10, h - 120);
+            ctx.fillStyle = "#004B91"; ctx.font = "bold 13px Noto Sans TC"; ctx.textAlign = "center";
+            c.name.split('').forEach((char, ci) => ctx.fillText(char, x + w/2, y + 25 + ci * 18));
+            ctx.fillStyle = "#000"; ctx.font = "900 24px Montserrat";
+            ctx.fillText(c.w, x + w/2, y + h - 25);
+            ctx.font = "900 10px Montserrat"; ctx.fillText("kg", x + w/2, y + h - 10);
+        });
+
+        orders.forEach((o, i) => {
+            if(i < 3) {
+                const ox = 40 + i * 215, oy = 380;
+                ctx.fillStyle = "white"; ctx.shadowBlur=10; ctx.shadowColor="rgba(0,0,0,0.1)";
+                ctx.fillRect(ox, oy, 200, 240); ctx.shadowBlur=0;
+                ctx.fillStyle = "#004B91"; ctx.fillRect(ox, oy, 200, 30);
+                ctx.fillStyle = "white"; ctx.font = "900 14px Noto Sans TC"; ctx.textAlign="left"; ctx.fillText("HH TEA LABEL", ox + 15, oy + 20);
+                ctx.fillStyle = "#004B91"; ctx.font = "900 18px Noto Sans TC"; ctx.fillText(o.type, ox + 15, oy + 65);
+                
+                const labelItems = RECIPES[o.type].label;
+                labelItems.forEach((text, idx) => {
+                    const ly = oy + 100 + idx * 25;
+                    ctx.fillStyle = "#444"; ctx.font = "bold 13px Noto Sans TC";
+                    ctx.fillText(`- ${text}`, ox + 20, ly);
+                    ctx.fillStyle = "#004B91"; ctx.beginPath(); ctx.arc(ox + 165, ly - 4, 10, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = "white"; ctx.font = "italic 11px Montserrat"; ctx.textAlign = "center"; ctx.fillText("i", ox + 165, ly - 1); ctx.textAlign = "left";
+                });
+                
+                ctx.fillStyle = "#EEE"; ctx.fillRect(ox + 15, oy + 220, 170, 5);
+                ctx.fillStyle = o.time < 30 ? "#FF5252" : "#004B91"; ctx.fillRect(ox + 15, oy + 220, (o.time/100)*170, 5);
+            }
+        });
+
+        ctx.fillStyle = "#004B91"; ctx.fillRect(690, 380, 280, 270);
+        ctx.fillStyle = "#FFD200"; ctx.font = "900 14px Montserrat"; ctx.textAlign="left"; ctx.fillText("MIXING PROGRESS", 710, 410);
+        let mixLines = Object.entries(currentMix).filter(([_,v])=>v>0).map(([k,v])=>`${k}:${v}kg`);
+        ctx.fillStyle = "#FFF"; ctx.font = "bold 12px Noto Sans TC";
+        mixLines.forEach((line, idx) => {
+            if(idx < 8) ctx.fillText(line, 710, 440 + idx * 22);
+        });
+
+        ctx.font = "45px Arial"; ctx.fillText("🗑️", 915, 415);
+        ctx.fillStyle = "#004B91"; ctx.fillRect(0, 680, 1000, 70);
+        ctx.fillStyle = "#FFD200"; ctx.font = "900 20px Noto Sans TC"; ctx.textAlign = "center";
+        ctx.fillText("🛎️ 點擊吧檯中心 · 結帳出貨", 500, 725);
+        
+        // 根據選擇的性別顯示店員頭像 - 縮小且帶有店員氣質
+        ctx.font = "45px Arial";
+        ctx.fillText(avatars[selectedGender].head, pX, 675); 
+    }
+</script>
+</body>
+</html>

@@ -162,13 +162,14 @@
         <!-- 左側：說明看板 -->
         <div class="entrance-panel" id="instruction-board">
             <div class="panel-title">門市營運公告</div>
-            <div style="font-size: 14px; line-height: 2.1; color: #333; font-weight: 500;">
+            <div style="font-size: 14px; line-height: 1.8; color: #333; font-weight: 500;">
                 1. 點擊上方飲料桶進行投料<br>
                 2. 飲料標籤詳列前三張配方<br>
                 3. 點擊標籤旁的 <b>ⓘ</b> 查看成分表<br>
                 4. 點擊下方吧檯中心結帳出貨<br>
                 5. 點垃圾桶圖示重做 (-$50)<br>
-                <b>6. 每回合遊戲時間為 3 分鐘</b><br>
+                <b>6. 每回合遊戲時間為 1 分鐘<br>
+                <small>(3方拌合機1分鐘可產出6方混凝土)</small></b><br>
                 <span style="color:#FF3B30; font-weight: 900;">⚠️ 負債超過 $500 將破產倒閉！</span>
             </div>
         </div>
@@ -220,7 +221,7 @@
     <div class="hud-info">
         <div>MANAGER: <span id="id-disp">---</span></div>
         <div style="font-size: 20px; letter-spacing: 2px;">HH 特調飲料旗艦店</div>
-        <div>營收: $<span id="funds-disp">0</span> | 剩餘時間: <span id="timer-disp">03:00</span></div>
+        <div>營收: $<span id="funds-disp">0</span> | 剩餘時間: <span id="timer-disp">01:00</span></div>
     </div>
     <canvas id="mainLab" width="1000" height="750"></canvas>
 </div>
@@ -265,7 +266,7 @@
     const barrelH = 120;
     const barrelSpace = 85;
 
-    let canvas, ctx, money = 0, timeLeft = 180, active = false; // 時間改為 180 秒 (3 分鐘)
+    let canvas, ctx, money = 0, timeLeft = 60, active = false; // 時間縮短為 60 秒 (1 分鐘)
     let user = "", orders = [], currentMix = {}, pX = 500;
     let selectedGender = 'male';
     let isMixError = false; 

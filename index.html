@@ -168,7 +168,7 @@
                 3. 點擊標籤旁的 <b>ⓘ</b> 查看成分表<br>
                 4. 點擊下方吧檯中心結帳出貨<br>
                 5. 點垃圾桶圖示重做 (-$50)<br>
-                <b>6. 每回合遊戲時間為 5 分鐘</b><br>
+                <b>6. 每回合遊戲時間為 3 分鐘</b><br>
                 <span style="color:#FF3B30; font-weight: 900;">⚠️ 負債超過 $500 將破產倒閉！</span>
             </div>
         </div>
@@ -220,7 +220,7 @@
     <div class="hud-info">
         <div>MANAGER: <span id="id-disp">---</span></div>
         <div style="font-size: 20px; letter-spacing: 2px;">HH 特調飲料旗艦店</div>
-        <div>營收: $<span id="funds-disp">0</span> | 剩餘時間: <span id="timer-disp">05:00</span></div>
+        <div>營收: $<span id="funds-disp">0</span> | 剩餘時間: <span id="timer-disp">03:00</span></div>
     </div>
     <canvas id="mainLab" width="1000" height="750"></canvas>
 </div>
@@ -265,7 +265,7 @@
     const barrelH = 120;
     const barrelSpace = 85;
 
-    let canvas, ctx, money = 0, timeLeft = 300, active = false;
+    let canvas, ctx, money = 0, timeLeft = 180, active = false; // 時間改為 180 秒 (3 分鐘)
     let user = "", orders = [], currentMix = {}, pX = 500;
     let selectedGender = 'male';
     let isMixError = false; 
@@ -300,8 +300,8 @@
         context.strokeStyle = "#333"; context.lineWidth = 2.5;
         context.beginPath(); context.arc(0, size*0.45, size*0.25, 0.2, Math.PI - 0.2); context.stroke();
         context.fillStyle = "rgba(255, 180, 190, 0.8)";
-        context.beginPath(); context.arc(-size*0.7, size*0.3, size*0.2, 0, Math.PI*2); context.fill();
-        context.beginPath(); context.arc(size*0.7, size*0.3, size*0.2, 0, Math.PI*2); context.fill();
+        context.beginPath(); context.arc(-size*0.7, size*0.3, size*0.2, 0, Math.PI * 2); context.fill();
+        context.beginPath(); context.arc(size*0.7, size*0.3, size*0.2, 0, Math.PI * 2); context.fill();
         if (!isHeadOnly) {
             context.translate(0, size * 1.5);
             context.fillStyle = "#004B91"; roundRect(context, -size*1.3, -size*0.3, size*2.6, size*3, 15, true, false);
@@ -382,14 +382,14 @@
             });
         }
 
-        // 3. 垃圾桶 (修正：允許負債)
+        // 3. 垃圾桶
         if(mx > 920 && my > 430 && my < 530) {
             if (Object.keys(currentMix).length > 0 || isMixError) {
                 currentMix = {}; 
                 isMixError = false; 
-                money -= 50; // 允許負值
+                money -= 50; 
                 popNotif(e.clientX, e.clientY, "-$50");
-                checkBankruptcy(); // 檢查是否破產
+                checkBankruptcy(); 
             }
         }
 
@@ -431,10 +431,9 @@
         if(timeLeft <= 0) finish();
     }
 
-    // 新增：檢查破產邏輯
     function checkBankruptcy() {
         if (money < -500) {
-            finish(true); // 傳入破產標記
+            finish(true); 
         }
     }
 
@@ -457,7 +456,7 @@
     }
 
     async function finish(isBankrupt = false) {
-        if (!active && !isBankrupt) return; // 避免重複執行
+        if (!active && !isBankrupt) return; 
         active = false;
         
         const overlayTitle = document.getElementById('overlay-title');
@@ -475,7 +474,7 @@
 
         document.getElementById('summary-overlay').style.display = 'flex';
         
-        if (scriptURL && !isBankrupt) { // 破產數據通常不計入正式排行，或依需求決定
+        if (scriptURL && !isBankrupt) {
             try {
                 await fetch(scriptURL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: user, score: money }) });
             } catch (e) { }

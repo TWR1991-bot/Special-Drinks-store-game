@@ -14,8 +14,10 @@
             --surface: #FFFFFF;
             --text-dark: #003366;
             --border: #004B91;
-            --metal-silver: #E0E0E0;
             --wood-brown: #8D6E63;
+            --diff-easy: #28a745;
+            --diff-medium: #fd7e14;
+            --diff-hard: #dc3545;
         }
 
         body, html {
@@ -36,7 +38,7 @@
 
         #store-entrance {
             width: 1050px; height: 620px;
-            display: grid; grid-template-columns: 300px 1fr 280px;
+            display: grid; grid-template-columns: 300px 1fr 310px;
             gap: 20px; transform-style: preserve-3d;
         }
 
@@ -57,6 +59,7 @@
             background: white; border: 8px solid var(--50-blue);
             overflow: hidden; border-radius: 20px;
             position: relative;
+            box-shadow: inset 0 0 50px rgba(0, 75, 145, 0.1);
         }
 
         #clerk-preview-canvas { position: absolute; top: 150px; width: 130px; height: 180px; z-index: 2; }
@@ -78,7 +81,7 @@
         .diff-btn { border-radius: 5px; width: auto; padding: 0 12px; font-size: 13px; font-weight: 900; color: var(--50-blue); }
 
         #brand-logo-circle {
-            position: absolute; top: 10px; width: 85px; height: 85px;
+            position: absolute; top: 10px; width: 90px; height: 90px;
             background: var(--50-blue); border-radius: 50%;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             color: white; border: 4px solid var(--50-yellow); z-index: 10;
@@ -96,6 +99,25 @@
             letter-spacing: 2px; font-size: 16px; border-radius: 5px;
         }
 
+        /* --- 排行榜視覺 --- */
+        .rank-item {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 10px; padding: 6px 0; border-bottom: 1px solid #F0F0F0;
+        }
+        .rank-info { flex: 1; text-align: left; display: flex; align-items: center; gap: 5px; overflow: hidden; }
+        .rank-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; max-width: 80px; }
+        .rank-data { display: flex; align-items: center; gap: 6px; }
+        .rank-score { font-family: 'Montserrat'; font-weight: 900; color: var(--50-blue); font-size: 12px; min-width: 60px; text-align: right; }
+        
+        .diff-badge { display: inline-block; padding: 1px 5px; border-radius: 4px; font-size: 10px; color: white; font-weight: 900; min-width: 18px; text-align: center; }
+        
+        .rank-info-btn {
+            background: var(--50-blue); color: white; border-radius: 50%; width: 18px; height: 18px;
+            display: flex; align-items: center; justify-content: center; font-size: 10px;
+            cursor: pointer; font-style: italic; font-weight: bold; border: none;
+        }
+        .rank-info-btn:hover { background: var(--50-yellow); color: var(--50-blue); }
+
         /* --- 遊戲主容器 --- */
         #game-view {
             width: 1000px; height: 750px; position: relative;
@@ -108,34 +130,52 @@
             display: flex; justify-content: space-between; align-items: center;
             padding: 0 20px; box-sizing: border-box; background: var(--50-blue);
             z-index: 100; font-size: 14px; font-weight: 900; color: white;
+            transition: filter 0.3s;
         }
+
+        #mainLab { transition: filter 0.3s; }
 
         .hud-buttons { display: flex; gap: 8px; }
         .hud-btn {
             background: rgba(255,255,255,0.2); border: 1px solid white; color: white;
-            padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 900;
+            padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 900;
         }
         .hud-btn:hover { background: var(--50-yellow); color: var(--50-blue); }
 
-        /* 彈窗樣式 */
         .modal {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: white; border: 6px solid var(--50-blue);
-            border-radius: 15px; z-index: 4000; padding: 25px;
+            border-radius: 15px; z-index: 4500; padding: 25px;
             display: none; box-shadow: 0 0 100px rgba(0,0,0,0.5); text-align: center;
         }
 
-        #pause-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4); z-index: 3500;
-            display: none; flex-direction: column; align-items: center; justify-content: center;
+        .pl-table {
+            width: 420px; background: white; color: var(--text-dark);
+            border-radius: 12px; padding: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            text-align: left; margin: 15px 0; border: 1px solid #EEE;
         }
+        .pl-row { display: flex; justify-content: space-between; margin: 8px 0; font-size: 14px; }
+        .pl-total { border-top: 2px solid var(--50-blue); padding-top: 10px; font-weight: 900; font-size: 17px; margin-top: 15px; }
+        .pl-notes { font-size: 12px; color: #666; margin-top: 15px; line-height: 1.6; background: #F9F9F9; padding: 10px; border-radius: 5px; }
 
         #summary-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 75, 145, 0.98); z-index: 5000;
             display: none; flex-direction: column; align-items: center; justify-content: center;
             color: white; text-align: center;
+        }
+
+        #history-pl-modal {
+            display: none;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 6000; background: white; border: 6px solid var(--50-blue);
+            border-radius: 20px; padding: 30px; box-shadow: 0 0 100px rgba(0,0,0,0.6);
+        }
+
+        #pause-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.3); z-index: 3500;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
         }
 
         .floating-notif {
@@ -147,6 +187,20 @@
     </style>
 </head>
 <body>
+
+<!-- 歷史損益查看彈窗 -->
+<div id="history-pl-modal">
+    <h2 id="hist-title" style="color:var(--50-blue); margin-top:0;">店長經營報告回顧</h2>
+    <div class="pl-table">
+        <div class="pl-row"><span>營業收入</span><span id="hist-revenue">$0</span></div>
+        <div class="pl-row" style="color:#666"><span>- 銷貨成本 (原料)</span><span id="hist-cogs">-$0</span></div>
+        <div class="pl-row" style="color:#666"><span>- 營業費用 (固定)</span><span>-$3,500</span></div>
+        <div class="pl-row" style="color:#666"><span>- 營業稅金</span><span id="hist-tax">-$0</span></div>
+        <div class="pl-row pl-total" id="hist-total-row"><span>稅後淨利</span><span id="hist-net">$0</span></div>
+        <div class="pl-notes" id="hist-remarks">載入中...</div>
+    </div>
+    <button onclick="closeHistoryPL()" style="background:var(--50-blue); color:white; border:none; padding:12px 60px; border-radius:50px; font-weight:900; cursor:pointer">關閉查看</button>
+</div>
 
 <!-- 登入畫面 -->
 <div id="login-screen">
@@ -161,12 +215,15 @@
                 5. 點垃圾桶重做 (-$50)<br>
                 <b>6. 簡單 1 分鐘，中/難 3 分鐘<br>
                 <small>(3方拌合機1分鐘產出6方混凝土)</small></b><br>
-                <span style="color:#FF3B30; font-weight: 900;">⚠️ 負債超過 $500 將破產倒閉！</span>
+                <span style="color:#FF3B30; font-weight: 900;">⚠️ 負債淨利超過 $500 將破產！</span>
             </div>
         </div>
 
         <div class="entrance-panel" id="main-login-hub">
-            <div id="brand-logo-circle"><div style="font-size:28px; font-weight:900">HH</div><div style="font-size:9px">挑戰賽</div></div>
+            <div id="brand-logo-circle">
+                <div style="font-size:28px; font-weight:900">HH</div>
+                <div style="font-size:11px; font-weight:bold; letter-spacing:1px">特調店</div>
+            </div>
             <canvas id="clerk-preview-canvas" width="160" height="240"></canvas>
             
             <div id="pickup-ledge">
@@ -179,39 +236,27 @@
                     <div class="diff-btn" id="diff-medium" onclick="selectDiff('medium')">中等</div>
                     <div class="diff-btn" id="diff-hard" onclick="selectDiff('hard')">困難</div>
                 </div>
-                <input type="text" id="player-name" placeholder="輸入店長姓名" maxlength="10">
+                <input type="text" id="player-name" placeholder="輸入店長姓名" maxlength="8">
                 <button id="start-btn" onclick="enterLab()">開始營業 OPEN</button>
             </div>
         </div>
 
         <div class="entrance-panel" id="rank-poster">
-            <div class="panel-title">最佳店長排行榜 / RANK</div>
-            <div id="rank-content" style="font-size: 15px; line-height: 2.8; color: var(--50-blue); font-weight: 900;">連線中...</div>
+            <div class="panel-title">最佳店長排行榜 (前10名)</div>
+            <div id="rank-content" style="color: var(--50-blue); font-weight: 900;">連線中...</div>
         </div>
     </div>
 </div>
 
 <div id="game-view">
-    <!-- 暫停遮罩 -->
     <div id="pause-overlay">
         <div class="entrance-panel" style="width:300px; align-items:center; transform:none; border-top:10px solid var(--50-blue)">
-            <h2 style="color:var(--50-blue)">遊戲暫停中</h2>
-            <p style="font-size:14px; color:#666">目前進度已保留</p>
-            <button onclick="togglePause()" style="background:var(--50-yellow); color:var(--50-blue); border:none; padding:12px 40px; font-weight:900; border-radius:5px; cursor:pointer; margin-top:10px">恢復遊戲</button>
+            <h2 style="color:var(--50-blue)">遊戲暫停</h2>
+            <p style="font-size:14px; color:#666">休息一下吧</p>
+            <button onclick="togglePause()" style="background:var(--50-yellow); color:var(--50-blue); border:none; padding:12px 40px; font-weight:900; border-radius:8px; cursor:pointer; margin-top:10px">繼續工作</button>
         </div>
     </div>
 
-    <!-- 退出確認 -->
-    <div id="confirm-exit-modal" class="modal">
-        <h3 style="color:var(--50-blue)">確定要退出遊戲嗎？</h3>
-        <p style="font-size:14px; color:#666">現在退出將不計入排行榜分數。</p>
-        <div style="display:flex; gap:10px; margin-top:20px">
-            <button onclick="confirmExit()" style="flex:1; background:#FF3B30; color:white; border:none; padding:10px; border-radius:5px; font-weight:900; cursor:pointer">確定退出</button>
-            <button onclick="closeExitModal()" style="flex:1; background:#EEE; border:none; padding:10px; border-radius:5px; cursor:pointer">取消</button>
-        </div>
-    </div>
-
-    <!-- 投料輸入 -->
     <div id="input-modal" class="modal">
         <h3 id="input-title" style="margin-top:0; color:var(--50-blue)">投入重量</h3>
         <input type="number" id="manual-weight" placeholder="請輸入 kg 數值">
@@ -228,22 +273,32 @@
     </div>
 
     <div id="summary-overlay">
-        <h1 id="overlay-title" style="font-size: 60px; color: var(--50-yellow);">LAB CLOSED</h1>
-        <p id="final-revenue" style="font-size: 32px; font-weight: 900;"></p>
-        <div id="save-status" style="margin-top:20px; color:var(--50-yellow)">數據同步中...</div>
-        <button id="reload-btn" onclick="location.reload()" style="margin-top: 40px; padding: 15px 60px; background: white; color: var(--50-blue); border: none; font-weight: 900; border-radius: 50px; cursor: pointer; display: none;">返回首頁</button>
+        <h1 id="overlay-title" style="font-size: 45px; color: var(--50-yellow); margin-bottom: 5px;">門市損益結算報告</h1>
+        
+        <div class="pl-table">
+            <div class="pl-row"><span>營業收入 (Total Sales)</span><span id="pl-revenue">$0</span></div>
+            <div class="pl-row" style="color:#666; font-size:13px"><span>- 銷貨成本 (COGS / 原料費)</span><span id="pl-cogs">-$0</span></div>
+            <div class="pl-row" style="color:#666; font-size:13px"><span>- 營業費用 (OpEx / 租金人事水電)</span><span>-$3,500</span></div>
+            <div class="pl-row" style="color:#666; font-size:13px"><span>- 營業稅金與規費 (Tax)</span><span id="pl-tax">-$0</span></div>
+            <div class="pl-row pl-total"><span>稅後淨利 (Net Profit)</span><span id="pl-net">$0</span></div>
+            
+            <div class="pl-notes" id="pl-remarks">
+                備註：成功出售 0 杯 / 報廢原料 0 kg / 丟棄 0 次
+            </div>
+        </div>
+
+        <div id="save-status" style="margin-top:10px; color:var(--50-yellow); font-size:14px">數據同步中...</div>
+        <button id="reload-btn" onclick="location.reload()" style="margin-top: 20px; padding: 12px 50px; background: white; color: var(--50-blue); border: none; font-weight: 900; border-radius: 50px; cursor: pointer; display: none;">返回首頁</button>
     </div>
 
     <div class="hud-info">
-        <div>
-            MANAGER: <span id="id-disp">---</span> | <span id="diff-disp" style="color:var(--50-yellow)">簡單</span>
-        </div>
-        <div style="font-size: 18px;">HH 特調挑戰賽</div>
+        <div>MANAGER: <span id="id-disp">---</span> | <span id="diff-disp" style="color:var(--50-yellow)">簡單</span></div>
+        <div style="font-size: 18px; letter-spacing: 2px;">HH 特調店</div>
         <div style="display:flex; align-items:center; gap:20px">
-            <div>營收: $<span id="funds-disp">0</span> | 時間: <span id="timer-disp">01:00</span></div>
+            <div>營業額: $<span id="funds-disp">0</span> | 時間: <span id="timer-disp">01:00</span></div>
             <div class="hud-buttons">
                 <button class="hud-btn" onclick="togglePause()">⏸️ 暫停</button>
-                <button class="hud-btn" onclick="openExitModal()">🚪 退出</button>
+                <button class="hud-btn" onclick="location.reload()">🚪 退出</button>
             </div>
         </div>
     </div>
@@ -254,11 +309,11 @@
     const scriptURL = "https://script.google.com/macros/s/AKfycbzsAQtvTQbZ-SuvwT7aR-4JgSYl2enlOm_RkmepvRwjl4wYDLm52jpSW0tuZ3kkCf5O/exec"; 
 
     const RECIPES = {
-        "混凝土綜合冰沙": { match: { "3分石":450,"6分石":450,"粗砂":450,"細砂":450,"緩凝劑":1,"減水劑":1,"抗凍劑":1,"速凝劑":1,"輸氣劑":1,"清水":120,"汙水":30,"水泥一型":180,"水泥二型":190,"飛灰":80,"爐石":100 }, price: 500, label: ["骨材:1800kg", "藥劑:5kg", "水類:150kg", "膠結:550kg"] },
-        "砂漿奶昔": { match: { "清水":120,"汙水":30,"粗砂":450,"細砂":450,"水泥一型":180,"水泥二型":190,"飛灰":80,"爐石":100 }, price: 300, label: ["水類:150kg", "細骨材:900kg", "膠結材:550kg"] },
-        "水合反應拿鐵": { match: { "清水":120,"汙水":30,"水泥一型":180,"水泥二型":190,"飛灰":80,"爐石":100 }, price: 350, label: ["水類:150kg", "膠結材:550kg"] },
-        "骨材氣泡飲": { match: { "3分石":450,"6分石":450,"粗砂":450,"細砂":450,"清水":120,"汙水":30 }, price: 200, label: ["全骨材:1800kg", "水類:150kg"] },
-        "神秘藥水": { match: { "緩凝劑":1,"減水劑":1,"抗凍劑":1,"速凝劑":1,"輸氣劑":1,"清水":120,"汙水":30 }, price: 800, label: ["特調藥劑:5kg", "水類:150kg"] }
+        "混凝土綜合冰沙": { match: { "3分石":450,"6分石":450,"粗砂":450,"細砂":450,"緩凝劑":1,"減水劑":1,"抗凍劑":1,"速凝劑":1,"輸氣劑":1,"清水":120,"汙水":30,"水泥一型":180,"水泥二型":190,"飛灰":80,"爐石":100 }, price: 1500, label: ["骨材:1800kg", "藥劑:5kg", "水類:150kg", "膠結:550kg"] },
+        "砂漿奶昔": { match: { "清水":120,"汙水":30,"粗砂":450,"細砂":450,"水泥一型":180,"水泥二型":190,"飛灰":80,"爐石":100 }, price: 900, label: ["水類:150kg", "細骨材:900kg", "膠結材:550kg"] },
+        "水合反應拿鐵": { match: { "清水":120,"汙水":30,"水泥一型":180,"水泥二型":190,"飛灰":80,"爐石":100 }, price: 1000, label: ["水類:150kg", "膠結材:550kg"] },
+        "骨材氣泡飲": { match: { "3分石":450,"6分石":450,"粗砂":450,"細砂":450,"清水":120,"汙水":30 }, price: 700, label: ["全骨材:1800kg", "水類:150kg"] },
+        "神秘藥水": { match: { "緩凝劑":1,"減水劑":1,"抗凍劑":1,"速凝劑":1,"輸氣劑":1,"清水":120,"汙水":30 }, price: 2500, label: ["特調藥劑:5kg", "水類:150kg"] }
     };
 
     const INGREDIENT_DETAILS = {
@@ -285,22 +340,13 @@
 
     const shelf1Y = 190, shelf2Y = 340, barrelW = 60, barrelH = 120, barrelSpace = 85;
 
-    let canvas, ctx, money = 0, timeLeft = 60, active = false;
+    let canvas, ctx, revenue = 0, timeLeft = 60, active = false;
     let user = "", orders = [], currentMix = {}, pX = 500;
     let selectedGender = 'male', difficulty = 'easy';
     let isMixError = false, currentPendingBarrel = null, isPaused = false;
-    let gameTimer; // 全域計時器變數
+    let gameTimer, leaderboardData = []; 
 
-    async function loadRank() {
-        if (!scriptURL) return;
-        try {
-            const response = await fetch(scriptURL);
-            const data = await response.json();
-            document.getElementById('rank-content').innerHTML = data.map((h, i) => 
-                `<div>${i+1}. ${h.name} <span style="float:right;">$${h.score}</span></div>`
-            ).join('') || "尚無紀錄";
-        } catch (e) { document.getElementById('rank-content').innerHTML = "資料庫連線失敗"; }
-    }
+    let successCount = 0, wasteKg = 0, scrapCount = 0;
 
     window.onload = () => {
         canvas = document.getElementById('mainLab');
@@ -309,17 +355,65 @@
         drawClerkOnLogin(); 
     };
 
+    async function loadRank() {
+        const rankContent = document.getElementById('rank-content');
+        if (!scriptURL) return;
+        try {
+            const response = await fetch(scriptURL);
+            leaderboardData = await response.json();
+            // 修正點：只顯示金額最高的前十名
+            rankContent.innerHTML = leaderboardData.slice(0, 10).map((h, i) => {
+                let bColor = h.mode === 'hard' ? 'var(--diff-hard)' : (h.mode === 'medium' ? 'var(--diff-medium)' : 'var(--diff-easy)');
+                let bText = h.mode === 'hard' ? '難' : (h.mode === 'medium' ? '中' : '簡');
+                return `
+                    <div class="rank-item">
+                        <div class="rank-info">
+                            <span>${i+1}.</span>
+                            <span class="rank-name">${h.name}</span>
+                        </div>
+                        <div class="rank-data">
+                            <span class="rank-score" style="color:${h.score >= 0 ? 'var(--50-blue)' : '#dc3545'}">$${h.score.toLocaleString()}</span>
+                            <span class="diff-badge" style="background:${bColor}">${bText}</span>
+                            <button class="rank-info-btn" onclick="viewHistoricalPL(${i})">i</button>
+                        </div>
+                    </div>`;
+            }).join('') || "尚無紀錄";
+        } catch (e) { rankContent.innerHTML = "資料庫連線中..."; }
+    }
+
+    function viewHistoricalPL(index) {
+        const h = leaderboardData[index];
+        if (!h) return;
+        if (!h.pl) { 
+            document.getElementById('hist-remarks').innerText = "此記錄為舊版，無詳細損益數據。";
+            document.getElementById('hist-revenue').innerText = "---";
+            document.getElementById('hist-cogs').innerText = "---";
+            document.getElementById('hist-tax').innerText = "---";
+            document.getElementById('hist-net').innerText = `$${h.score.toLocaleString()}`;
+        } else {
+            document.getElementById('hist-revenue').innerText = `$${h.pl.revenue.toLocaleString()}`;
+            document.getElementById('hist-cogs').innerText = `-$${h.pl.cogs.toLocaleString()}`;
+            document.getElementById('hist-tax').innerText = `-$${h.pl.tax.toLocaleString()}`;
+            document.getElementById('hist-net').innerText = `$${h.score.toLocaleString()}`;
+            document.getElementById('hist-remarks').innerText = h.pl.remarks;
+        }
+        document.getElementById('hist-title').innerText = `${h.name} 的經營報告`;
+        document.getElementById('hist-total-row').style.color = h.score >= 0 ? 'var(--50-blue)' : '#dc3545';
+        document.getElementById('history-pl-modal').style.display = 'block';
+    }
+
+    function closeHistoryPL() { document.getElementById('history-pl-modal').style.display = 'none'; }
+
     function selectGender(g) { selectedGender = g; document.getElementById('btn-male').classList.toggle('active', g==='male'); document.getElementById('btn-female').classList.toggle('active', g==='female'); drawClerkOnLogin(); }
     function selectDiff(d) { difficulty = d; document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active')); document.getElementById('diff-'+d).classList.add('active'); }
 
     function drawCuteClerk(context, x, y, size, gender, isHeadOnly = false) {
-        context.save();
-        context.translate(x, y);
+        context.save(); context.translate(x, y);
         if (gender === 'female') {
             context.fillStyle = "#3D2B1F";
-            context.beginPath(); context.arc(0, -size*0.1, size * 1.35, 0, Math.PI * 2); context.fill();
-            if (!isHeadOnly) context.fillRect(-size * 1.3, 0, size * 2.6, size * 2.2);
-            else { context.beginPath(); context.arc(0, size*0.4, size * 1.25, 0, Math.PI, true); context.fill(); }
+            context.beginPath(); context.arc(0, 0, size * 1.3, 0, Math.PI * 2); context.fill();
+            if (!isHeadOnly) { context.fillRect(-size * 1.3, 0, size * 2.6, size * 2.2); }
+            else { context.beginPath(); context.arc(0, size*0.3, size * 1.25, 0, Math.PI); context.fill(); }
         }
         context.fillStyle = "#FFDBAC";
         context.beginPath(); context.arc(0, 0, size, 0, Math.PI * 2); context.fill();
@@ -327,7 +421,7 @@
         context.beginPath(); context.arc(0, -size * 0.45, size, Math.PI, 0); context.fill();
         if (gender === 'female') {
             context.fillStyle = "#FFDBAC";
-            context.beginPath(); context.moveTo(-size*0.4, -size*0.2); context.lineTo(0, -size*0.75); context.lineTo(size*0.4, -size*0.2); context.closePath(); context.fill();
+            context.beginPath(); context.moveTo(-size*0.4, -size*0.2); context.lineTo(0, -size*0.8); context.lineTo(size*0.4, -size*0.2); context.closePath(); context.fill();
         }
         context.fillStyle = "#333";
         context.beginPath(); context.arc(-size*0.4, size*0.15, size*0.13, 0, Math.PI*2); context.fill();
@@ -350,7 +444,7 @@
         const pCanvas = document.getElementById('clerk-preview-canvas');
         const pCtx = pCanvas.getContext('2d');
         pCtx.clearRect(0,0,160,240);
-        drawCuteClerk(pCtx, 80, 50, 28, selectedGender, false);
+        drawCuteClerk(pCtx, 80, 50, 26, selectedGender, false);
     }
 
     function enterLab() {
@@ -359,13 +453,10 @@
         timeLeft = (difficulty === 'easy') ? 60 : 180;
         document.getElementById('diff-disp').innerText = difficulty === 'easy' ? '簡單' : (difficulty === 'medium' ? '中等' : '困難');
         document.getElementById('login-screen').style.opacity = 0;
+        successCount = 0; wasteKg = 0; scrapCount = 0; revenue = 0;
         setTimeout(() => {
             document.getElementById('login-screen').style.display = 'none';
-            active = true;
-            isPaused = false;
-            orders = [];
-            currentMix = {};
-            money = 0;
+            active = true; isPaused = false; orders = []; currentMix = {};
             for(let i=0; i<6; i++) spawnOrder();
             canvas.addEventListener('mousedown', onClick);
             gameTimer = setInterval(sec, 1000);
@@ -373,39 +464,20 @@
         }, 500);
     }
 
-    // --- 暫停與退出邏輯 ---
     function togglePause() {
         if (!active) return;
         isPaused = !isPaused;
         document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
-    }
-
-    function openExitModal() {
-        if (!active) return;
-        isPaused = true;
-        document.getElementById('confirm-exit-modal').style.display = 'block';
-    }
-
-    function closeExitModal() {
-        document.getElementById('confirm-exit-modal').style.display = 'none';
-        isPaused = false;
-    }
-
-    function confirmExit() {
-        active = false;
-        clearInterval(gameTimer);
-        document.getElementById('confirm-exit-modal').style.display = 'none';
-        document.getElementById('login-screen').style.display = 'flex';
-        document.getElementById('login-screen').style.opacity = 1;
-        document.getElementById('pause-overlay').style.display = 'none';
+        const filterVal = isPaused ? 'blur(10px)' : 'none';
+        canvas.style.filter = filterVal;
+        document.querySelector('.hud-info').style.filter = filterVal;
     }
 
     function onClick(e) {
-        if(!active || isPaused) return; // 暫停中不處理點擊
+        if(!active || isPaused) return; 
         const rect = canvas.getBoundingClientRect();
         const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
         const my = (e.clientY - rect.top) * (canvas.height / rect.height);
-
         for(let i=0; i < Math.min(orders.length, 3); i++) {
             const ox = 40 + i * 215, oy = 450;
             const labelItems = RECIPES[orders[i].type].label;
@@ -417,9 +489,7 @@
                 }
             }
         }
-
         pX = mx; 
-        
         if (!isMixError) {
             COLUMNS.forEach((c, i) => {
                 let bx, by;
@@ -431,56 +501,31 @@
                 }
             });
         }
-
         if(mx > 920 && my > 430 && my < 530) {
             if (Object.keys(currentMix).length > 0 || isMixError) {
-                currentMix = {}; isMixError = false; money -= 50;
+                for(let k in currentMix) wasteKg += currentMix[k];
+                currentMix = {}; isMixError = false; revenue -= 50; scrapCount++;
                 popNotif(e.clientX, e.clientY, "-$50");
-                if (money < -500) finish(true);
+                if (revenue < -500) finish(true);
             }
         }
         if(my > 700) ship();
     }
 
-    function openInput(barrel) {
-        currentPendingBarrel = barrel;
-        document.getElementById('input-title').innerText = barrel.name;
-        document.getElementById('manual-weight').value = "";
-        document.getElementById('input-modal').style.display = 'block';
-        document.getElementById('manual-weight').focus();
-    }
-
-    function confirmWeight() {
-        const val = parseInt(document.getElementById('manual-weight').value);
-        if (!isNaN(val) && val > 0) { currentMix[currentPendingBarrel.name] = (currentMix[currentPendingBarrel.name] || 0) + val; }
-        closeInput();
-    }
-
+    function openInput(barrel) { currentPendingBarrel = barrel; document.getElementById('input-title').innerText = barrel.name; document.getElementById('manual-weight').value = ""; document.getElementById('input-modal').style.display = 'block'; document.getElementById('manual-weight').focus(); }
+    function confirmWeight() { const val = parseInt(document.getElementById('manual-weight').value); if (!isNaN(val) && val > 0) { currentMix[currentPendingBarrel.name] = (currentMix[currentPendingBarrel.name] || 0) + val; } closeInput(); }
     function closeInput() { document.getElementById('input-modal').style.display = 'none'; currentPendingBarrel = null; }
-    function showIngredientDetail(category) {
-        const detail = INGREDIENT_DETAILS[category] || "暫無資料";
-        document.getElementById('modal-title').innerText = category + " 明細";
-        document.getElementById('modal-body').innerText = detail;
-        document.getElementById('ingredient-modal').style.display = 'block';
-    }
+    function showIngredientDetail(category) { const detail = INGREDIENT_DETAILS[category] || "暫無資料"; document.getElementById('modal-title').innerText = category + " 明細"; document.getElementById('modal-body').innerText = detail; document.getElementById('ingredient-modal').style.display = 'block'; }
     function closeModal() { document.getElementById('ingredient-modal').style.display = 'none'; }
-
-    function popNotif(x, y, t) {
-        const d = document.createElement('div'); d.className = 'floating-notif';
-        d.style.left = x + 'px'; d.style.top = y + 'px';
-        d.innerText = t; document.body.appendChild(d);
-        setTimeout(() => d.remove(), 800);
-    }
-
+    function popNotif(x, y, t) { const d = document.createElement('div'); d.className = 'floating-notif'; d.style.left = x + 'px'; d.style.top = y + 'px'; d.innerText = t; document.body.appendChild(d); setTimeout(() => d.remove(), 800); }
     function spawnOrder() { const t = Object.keys(RECIPES); orders.push({ type: t[Math.floor(Math.random()*t.length)], time: 100 }); }
 
     function sec() {
         if(!active || isPaused) return;
-        timeLeft--;
-        orders.forEach(o => o.time--);
+        timeLeft--; orders.forEach(o => o.time--);
         if(orders[0] && orders[0].time <= 0) orders.shift();
         if(orders.length < 6) spawnOrder();
-        document.getElementById('funds-disp').innerText = money;
+        document.getElementById('funds-disp').innerText = revenue.toLocaleString();
         const m = Math.floor(timeLeft/60), s = timeLeft%60;
         document.getElementById('timer-disp').innerText = `${m}:${s < 10 ? '0'+s : s}`;
         if(timeLeft <= 0) finish();
@@ -493,26 +538,44 @@
         let ok = true;
         for(let k in req) if(currentMix[k] !== req[k]) ok = false;
         for(let k in currentMix) if(!req[k] && currentMix[k] > 0) ok = false;
-
-        if(ok) {
-            money += Math.floor(RECIPES[o.type].price * multiplier);
-            orders.shift(); currentMix = {}; isMixError = false; spawnOrder();
-            popNotif(pX, 680, "出貨成功！");
-        } else {
-            isMixError = true; popNotif(pX, 680, "配方錯誤！");
-        }
+        if(ok) { revenue += Math.floor(RECIPES[o.type].price * multiplier); successCount++; orders.shift(); currentMix = {}; isMixError = false; spawnOrder(); popNotif(pX, 680, "出貨成功！"); }
+        else { isMixError = true; popNotif(pX, 680, "配方錯誤！"); }
     }
 
     async function finish(isBankrupt = false) {
-        if (!active) return;
-        active = false;
-        clearInterval(gameTimer);
-        const oTitle = document.getElementById('overlay-title'), fRev = document.getElementById('final-revenue');
-        if (isBankrupt) { oTitle.innerText = "BANKRUPTCY"; oTitle.style.color = "#FF3B30"; fRev.innerText = `赤字: $${money} (店面倒閉)`; }
-        else { oTitle.innerText = "LAB CLOSED"; oTitle.style.color = "var(--50-yellow)"; fRev.innerText = `今日營收: $${money}`; }
+        if (!active) return; active = false; clearInterval(gameTimer);
+        canvas.style.filter = 'none'; document.querySelector('.hud-info').style.filter = 'none';
+        
+        const cogs = Math.floor(successCount * 350 + wasteKg * 0.5); 
+        const opex = 3500; 
+        const tax = revenue > 0 ? Math.floor(revenue * 0.05) : 0; 
+        const netProfit = revenue - cogs - opex - tax;
+        const remarks = `成功出售 ${successCount} 杯 / 報廢原料 ${wasteKg} kg / 丟棄 ${scrapCount} 次`;
+
+        document.getElementById('pl-revenue').innerText = `$${revenue.toLocaleString()}`;
+        document.getElementById('pl-cogs').innerText = `-$${cogs.toLocaleString()}`;
+        document.getElementById('pl-tax').innerText = `-$${tax.toLocaleString()}`;
+        document.getElementById('pl-net').innerText = `$${netProfit.toLocaleString()}`;
+        document.getElementById('pl-net').style.color = netProfit >= 0 ? 'var(--50-blue)' : '#dc3545';
+        document.getElementById('pl-remarks').innerText = `備註：${remarks}`;
+        
+        const oTitle = document.getElementById('overlay-title');
+        if (isBankrupt || netProfit < -1000) { oTitle.innerText = "門市破產倒閉"; oTitle.style.color = "#FF3B30"; }
+        else { oTitle.innerText = "營運結束結算"; oTitle.style.color = "var(--50-yellow)"; }
         document.getElementById('summary-overlay').style.display = 'flex';
+        
         if (scriptURL && !isBankrupt) {
-            try { await fetch(scriptURL, { method: 'POST', body: JSON.stringify({ name: user, score: money, mode: difficulty }) }); } catch (e) { }
+            try { 
+                await fetch(scriptURL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ 
+                        name: user, 
+                        score: netProfit, 
+                        mode: difficulty,
+                        pl: { revenue, cogs, tax, remarks }
+                    }) 
+                }); 
+            } catch (e) { }
         }
         document.getElementById('reload-btn').style.display = 'block';
     }
@@ -545,22 +608,18 @@
         ctx.fillStyle = "#F5F5F7"; ctx.beginPath(); ctx.moveTo(0, 500); ctx.lineTo(1000, 500); ctx.lineTo(1000, 750); ctx.lineTo(0, 750); ctx.fill();
         ctx.strokeStyle = "rgba(0, 75, 145, 0.05)";
         for(let i=0; i<15; i++) { ctx.beginPath(); ctx.moveTo(0, 500 + i*20); ctx.lineTo(1000, 500 + i*20); ctx.stroke(); }
-
         drawWoodenShelf(ctx, 140, shelf1Y, 720, 15); drawWoodenShelf(ctx, 180, shelf2Y, 640, 15);
         COLUMNS.forEach((c, i) => {
-            let bx, by;
-            if (i < 8) { bx = 160 + i * barrelSpace; by = shelf1Y - barrelH + 15; }
-            else { bx = 200 + (i - 8) * barrelSpace; by = shelf2Y - barrelH + 15; }
+            let bx, by; if (i < 8) { bx = 160 + i * barrelSpace; by = shelf1Y - barrelH + 15; } else { bx = 200 + (i - 8) * barrelSpace; by = shelf2Y - barrelH + 15; }
             drawBeverageBarrel(ctx, bx, by, barrelW, barrelH, c.col, c.name, c.w);
         });
-
         orders.forEach((o, i) => {
             if(i < 3) {
                 const ox = 40 + i * 215, oy = 450;
                 ctx.fillStyle = "white"; ctx.shadowBlur=10; ctx.shadowColor="rgba(0,0,0,0.1)";
                 ctx.fillRect(ox, oy, 200, 240); ctx.shadowBlur=0;
                 ctx.fillStyle = "#004B91"; ctx.fillRect(ox, oy, 200, 30);
-                ctx.fillStyle = "white"; ctx.font = "900 14px Noto Sans TC"; ctx.textAlign="left"; ctx.fillText("HH TEA挑戰賽", ox+15, oy+20);
+                ctx.fillStyle = "white"; ctx.font = "900 14px Noto Sans TC"; ctx.textAlign="left"; ctx.fillText("HH TEA LABEL", ox+15, oy+20);
                 ctx.fillStyle = "#004B91"; ctx.font = "900 18px Noto Sans TC"; ctx.fillText(o.type, ox+15, oy+65);
                 RECIPES[o.type].label.forEach((text, idx) => {
                     const ly = oy + 100 + idx * 25; ctx.fillStyle = "#444"; ctx.font = "bold 13px Noto Sans TC";
@@ -573,7 +632,6 @@
                 ctx.fillStyle = o.time < 30 ? "#FF5252" : "#004B91"; ctx.fillRect(ox+15, oy+220, (o.time/100)*170, 5);
             }
         });
-
         ctx.fillStyle = "#004B91"; ctx.fillRect(690, 450, 280, 250);
         ctx.fillStyle = "#FFD200"; ctx.font = "900 14px Montserrat"; ctx.textAlign="left"; ctx.fillText("MIXING PROGRESS", 710, 480);
         if (isMixError) { ctx.fillStyle = "#FF5252"; ctx.font = "bold 16px Noto Sans TC"; ctx.fillText("⚠️ 配方錯誤！", 710, 520); ctx.fillStyle = "white"; ctx.font = "13px Noto Sans TC"; ctx.fillText("點擊垃圾桶扣 $50 清空", 710, 550); }

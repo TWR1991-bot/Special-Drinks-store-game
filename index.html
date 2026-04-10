@@ -107,7 +107,7 @@
         .rank-info { flex: 1; text-align: left; display: flex; align-items: center; gap: 5px; overflow: hidden; }
         .rank-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; max-width: 80px; }
         .rank-data { display: flex; align-items: center; gap: 6px; }
-        .rank-score { font-family: 'Montserrat'; font-weight: 900; color: var(--50-blue); font-size: 12px; min-width: 60px; text-align: right; }
+        .rank-score { font-family: 'Montserrat'; font-weight: 900; color: var(--50-blue); font-size: 12px; min-width: 70px; text-align: right; }
         
         .diff-badge { display: inline-block; padding: 1px 5px; border-radius: 4px; font-size: 10px; color: white; font-weight: 900; min-width: 18px; text-align: center; }
         
@@ -142,6 +142,7 @@
         }
         .hud-btn:hover { background: var(--50-yellow); color: var(--50-blue); }
 
+        /* 財務報表與彈窗 */
         .modal {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: white; border: 6px solid var(--50-blue);
@@ -215,7 +216,7 @@
                 5. 點垃圾桶重做 (-$50)<br>
                 <b>6. 簡單 1 分鐘，中/難 3 分鐘<br>
                 <small>(3方拌合機1分鐘產出6方混凝土)</small></b><br>
-                <span style="color:#FF3B30; font-weight: 900;">⚠️ 負債淨利超過 $500 將破產！</span>
+                <span style="color:#FF3B30; font-weight: 900;">⚠️ 稅後淨利負債超過 $1,000 將破產！</span>
             </div>
         </div>
 
@@ -308,12 +309,13 @@
 <script>
     const scriptURL = "https://script.google.com/macros/s/AKfycbzsAQtvTQbZ-SuvwT7aR-4JgSYl2enlOm_RkmepvRwjl4wYDLm52jpSW0tuZ3kkCf5O/exec"; 
 
+    // --- 財務參數調校：增加成就感 ---
     const RECIPES = {
-        "混凝土綜合冰沙": { match: { "3分石":450,"6分石":450,"粗砂":450,"細砂":450,"緩凝劑":1,"減水劑":1,"抗凍劑":1,"速凝劑":1,"輸氣劑":1,"清水":120,"汙水":30,"水泥一型":180,"水泥二型":190,"飛灰":80,"爐石":100 }, price: 1500, label: ["骨材:1800kg", "藥劑:5kg", "水類:150kg", "膠結:550kg"] },
-        "砂漿奶昔": { match: { "清水":120,"汙水":30,"粗砂":450,"細砂":450,"水泥一型":180,"水泥二型":190,"飛灰":80,"爐石":100 }, price: 900, label: ["水類:150kg", "細骨材:900kg", "膠結材:550kg"] },
-        "水合反應拿鐵": { match: { "清水":120,"汙水":30,"水泥一型":180,"水泥二型":190,"飛灰":80,"爐石":100 }, price: 1000, label: ["水類:150kg", "膠結材:550kg"] },
-        "骨材氣泡飲": { match: { "3分石":450,"6分石":450,"粗砂":450,"細砂":450,"清水":120,"汙水":30 }, price: 700, label: ["全骨材:1800kg", "水類:150kg"] },
-        "神秘藥水": { match: { "緩凝劑":1,"減水劑":1,"抗凍劑":1,"速凝劑":1,"輸氣劑":1,"清水":120,"汙水":30 }, price: 2500, label: ["特調藥劑:5kg", "水類:150kg"] }
+        "混凝土綜合冰沙": { match: { "3分石":450,"6分石":450,"粗砂":450,"細砂":450,"緩凝劑":1,"減水劑":1,"抗凍劑":1,"速凝劑":1,"輸氣劑":1,"清水":120,"汙水":30,"水泥一型":180,"水泥二型":190,"飛灰":80,"爐石":100 }, price: 5800, label: ["骨材:1800kg", "藥劑:5kg", "水類:150kg", "膠結:550kg"] },
+        "砂漿奶昔": { match: { "清水":120,"汙水":30,"粗砂":450,"細砂":450,"水泥一型":180,"水泥二型":190,"飛灰":80,"爐石":100 }, price: 3200, label: ["水類:150kg", "細骨材:900kg", "膠結材:550kg"] },
+        "水合反應拿鐵": { match: { "清水":120,"汙水":30,"水泥一型":180,"水泥二型":190,"飛灰":80,"爐石":100 }, price: 3500, label: ["水類:150kg", "膠結材:550kg"] },
+        "骨材氣泡飲": { match: { "3分石":450,"6分石":450,"粗砂":450,"細砂":450,"清水":120,"汙水":30 }, price: 2400, label: ["全骨材:1800kg", "水類:150kg"] },
+        "神秘藥水": { match: { "緩凝劑":1,"減水劑":1,"抗凍劑":1,"速凝劑":1,"輸氣劑":1,"清水":120,"汙水":30 }, price: 8800, label: ["特調藥劑:5kg", "水類:150kg"] }
     };
 
     const INGREDIENT_DETAILS = {
@@ -361,7 +363,6 @@
         try {
             const response = await fetch(scriptURL);
             leaderboardData = await response.json();
-            // 修正點：只顯示金額最高的前十名
             rankContent.innerHTML = leaderboardData.slice(0, 10).map((h, i) => {
                 let bColor = h.mode === 'hard' ? 'var(--diff-hard)' : (h.mode === 'medium' ? 'var(--diff-medium)' : 'var(--diff-easy)');
                 let bText = h.mode === 'hard' ? '難' : (h.mode === 'medium' ? '中' : '簡');
@@ -506,7 +507,7 @@
                 for(let k in currentMix) wasteKg += currentMix[k];
                 currentMix = {}; isMixError = false; revenue -= 50; scrapCount++;
                 popNotif(e.clientX, e.clientY, "-$50");
-                if (revenue < -500) finish(true);
+                checkBankruptcy();
             }
         }
         if(my > 700) ship();
@@ -542,11 +543,18 @@
         else { isMixError = true; popNotif(pX, 680, "配方錯誤！"); }
     }
 
+    function checkBankruptcy() {
+        // 營收與預扣費用相比，若赤字過大則倒閉
+        if (revenue < -1000) finish(true);
+    }
+
     async function finish(isBankrupt = false) {
         if (!active) return; active = false; clearInterval(gameTimer);
         canvas.style.filter = 'none'; document.querySelector('.hud-info').style.filter = 'none';
         
-        const cogs = Math.floor(successCount * 350 + wasteKg * 0.5); 
+        // --- 調整後的損益計算：大幅提升淨利成就感 ---
+        // 原料成本調降：每杯 300，報廢每kg 僅 0.1
+        const cogs = Math.floor(successCount * 300 + wasteKg * 0.1); 
         const opex = 3500; 
         const tax = revenue > 0 ? Math.floor(revenue * 0.05) : 0; 
         const netProfit = revenue - cogs - opex - tax;
